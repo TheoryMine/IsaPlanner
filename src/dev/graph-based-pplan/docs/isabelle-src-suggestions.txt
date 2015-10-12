@@ -1,0 +1,34 @@
+
+* Unifiers from unification should be cross-instantiated.
+
+You sometimes get things of the form ["X = f Y", "Y = g"], it would be
+better to have this as: ["X = f g", "Y = g"]. See my code in
+term_manip.ML for this.
+
+
+* Move unification outside the kernel.
+
+Unification should be taken outside the kernel, there is no need for
+it to be there and it doesn't really speed things up. See my version
+of resolution for an idea how to do this.
+
+
+* Isar show statements should allow hypothesis
+
+showing "A ==> B" in Isar doesn't work, you need to "assume A" and
+"show B", this is not very intuitive and could fairly easily be
+fixed. We need to change "rtac" to "bicompose" in exporting of shown
+results.
+
+
+* Freezing and thawing of type variables
+
+There should be better functions for these - ones where you specify
+the type vars/freese that you want to manipulate -- see my code
+term_manip.ML.
+
+
+* Clean up in Term.ML
+
+make Term.term_frees and Term.term_vars give the contents of Free and
+Var, rather than terms. Ie. like Term.term_tfrees.

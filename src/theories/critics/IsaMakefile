@@ -1,0 +1,35 @@
+
+## targets
+
+default: critics-view
+images: critics-img
+test: critics-view
+
+all: images test
+
+## global settings
+SRC = $(ISABELLE_HOME)/src
+OUT = $(ISABELLE_OUTPUT)
+LOG = $(OUT)/log
+
+USEDIR = $(ISATOOL) usedir -v true -i true -d ps -D generated -s critics
+BUILDIMAGE = $(ISATOOL) usedir -b -v true -s critics
+
+## in order that heaps and browser info be put in *this* directory...
+ISABELLE_BROWSER_INFO=./browser_info
+
+## theories
+
+critics-view: $(LOG)/critics-view.gz
+critics-img: $(LOG)/critics-img.gz
+
+$(LOG)/critics-view.gz: ./ROOT.ML ./document/root.tex ./*.thy
+	@export TEXINPUTS=$(TEXINPUTS):./:./tex; $(USEDIR) HOL_IsaP ./; ./viewpdf.pl
+
+$(LOG)/critics-img.gz: ./ROOT.ML ./document/root.tex ./*.thy
+	@$(BUILDIMAGE) HOL_IsaP HOL_IsaP_critics
+
+## clean
+
+clean:
+	@rm -f $(LOG)/critics.gz; @rm -f $(LOG)/critics-img.gz

@@ -1,0 +1,298 @@
+SynthN.thy only +
+-----------------------
+Size 8: (No theorems past size 5)
+-----------------------
+Synthesised theorems: 
+a + 0 = a
+-----------------------
+Synthesised conjectures (not proved): 
+-----------------------
+AC-properties found: 
+x + y + z = x + (y + z)
+x + y = y + x
+
+ False conjectures synthesised: 85
+
+
+
+
+SynthN.thy + and *
+-----------------------
+Size 8:
+-----------------------
+Synthesised theorems: 
+a + 0 = a
+a * 0 = 0
+-----------------------
+Synthesised conjectures (not proved): 
+-----------------------
+AC-properties found: 
+x * y * z = x * (y * z)
+x * y = y * x
+x + y + z = x + (y + z)
+x + y = y + x
+
+ False conjectures synthesised: 376
+
+
+
+
+Test on SynthL.thy, a list theory with append, rev and qrev
+-----------------------
+
+Size 6:
+
+Without var occurence restriction.
+-----------------------
+Synthesised theorems: 
+a @ [] = a
+rev rev a = a
+-----------------------
+Synthesised conjectures (not proved): 
+qrev a [] = rev a
+qrev (rev a) [] = a
+rev qrev a [] = a
+-----------------------
+AC-properties found: 
+x @ y @ z = x @ (y @ z)
+
+ False conjectures synthesised: 104
+
+-----------------------
+With var occurence restriction:
+-----------------------
+Synthesised theorems: 
+a @ [] = a
+rev rev a = a
+-----------------------
+Synthesised conjectures (not proved): 
+qrev a [] = rev a
+qrev (rev a) [] = a
+rev qrev a [] = a
+-----------------------
+AC-properties found: 
+x @ y @ z = x @ (y @ z)
+
+ False conjectures synthesised: 62
+
+
+Size 8:
+Without var occurence restriction.
+-----------------------
+Synthesised theorems: 
+a @ [] = a
+rev rev a = a
+rev b @ a = qrev b a
+qrev (rev b) a = b @ a
+-----------------------
+Synthesised conjectures (not proved): 
+qrev a [] = rev a
+qrev (rev a) [] = a
+rev qrev a [] = a
+qrev qrev a [] [] = a
+rev a @ a = qrev a a
+qrev (rev a) a = a @ a
+rev qrev b a = qrev a b
+rev qrev a a = qrev a a
+rev qrev (rev a) [] = rev a
+-----------------------
+AC-properties found: 
+x @ y @ z = x @ (y @ z)
+
+ False conjectures synthesised: 2452
+
+-----------------------
+With var occurence restriction (still a few minutes):
+-----------------------
+Synthesised theorems: 
+a @ [] = a
+rev rev a = a
+rev a @ b = qrev a b
+qrev (rev a) b = a @ b
+-----------------------
+Synthesised conjectures (not proved): 
+qrev a [] = rev a
+qrev (rev a) [] = a
+rev qrev a [] = a
+qrev qrev a [] [] = a
+rev a @ a = qrev a a
+qrev (rev a) a = a @ a
+rev qrev a b = qrev b a
+rev qrev a a = qrev a a
+rev qrev (rev a) [] = rev a
+-----------------------
+AC-properties found: 
+x @ y @ z = x @ (y @ z)
+
+ False conjectures synthesised: 1469
+
+With variable restriction and max 3 different varaibles.
+Could also be because we prove an extra theorem.
+-----------------------
+Synthesised theorems: 
+a @ [] = a
+rev rev a = a
+qrev (rev a) [] = a
+rev a @ b = qrev a b
+qrev (rev a) b = a @ b
+-----------------------
+Synthesised conjectures (not proved): 
+qrev a [] = rev a
+rev qrev a [] = a
+qrev qrev a [] [] = a
+rev a @ a = qrev a a
+qrev (rev a) a = a @ a
+rev qrev a a = qrev a a
+rev qrev a b = qrev b a
+-----------------------
+AC-properties found: 
+x @ y @ z = x @ (y @ z)
+-----------------------
+Commuted versions of defs: 
+
+ False conjectures synthesised: 1424
+
+
+
+
+-----------------------
+Size 10: a long time
+-----------------------
+Synthesised theorems: 
+a @ [] = a
+rev rev a = a
+qrev (rev a) [] = a
+rev b @ a = qrev b a
+qrev (rev b) a = b @ a
+qrev qrev b a [] = qrev a b
+rev (b @ rev a) = a @ rev b
+-----------------------
+Synthesised conjectures (not proved): 
+qrev a [] = rev a
+rev qrev a [] = a
+qrev qrev a [] [] = a
+rev a @ a = qrev a a
+qrev (rev a) a = a @ a
+rev qrev b a = qrev a b
+rev qrev a a = qrev a a
+qrev a (rev b) = rev (b @ a)
+qrev a (rev a) = rev (a @ a)
+rev (b @ a) = qrev a (rev b)
+rev (a @ a) = qrev a (rev a)
+qrev b [] @ a = qrev b a
+qrev a [] @ a = qrev a a
+qrev qrev b [] a = b @ a
+qrev qrev a [] a = a @ a
+qrev qrev a a [] = qrev a a
+rev qrev b (rev a) = a @ b
+rev qrev a (rev a) = a @ a
+rev qrev qrev a [] [] = rev a
+qrev b [] @ a = rev qrev a b
+qrev a [] @ a = rev qrev a a
+qrev a qrev b [] = rev (b @ a)
+qrev a qrev a [] = rev (a @ a)
+qrev (b @ a) [] = qrev a (rev b)
+qrev (a @ a) [] = qrev a (rev a)
+qrev (a @ b) [] = rev (a @ b)
+qrev (a @ a) [] = rev (a @ a)
+rev (a @ rev a) = a @ rev a
+rev qrev b qrev a [] = a @ b
+rev qrev a qrev a [] = a @ a
+rev qrev (a @ b) [] = a @ b
+rev qrev (a @ a) [] = a @ a
+rev (qrev b [] @ a) = qrev a b
+rev (qrev a [] @ a) = qrev a a
+rev qrev b [a] = a # b
+rev qrev a [[]] = [] # a
+-----------------------
+AC-properties found: 
+x @ y @ z = x @ (y @ z)
+
+ False conjectures synthesised: 40763
+With variable occurence restriction it is still slow:
+ False conjectures synthesised: 24571
+
+------------------------------------------------------------------------------
+Test on SynthL2.thy, a list theory with append, rev and map
+-----------------------------------------------------------------------------
+Size 6: Fast
+-----------------------
+Synthesised theorems: 
+a @ [] = a
+rev rev a = a
+-----------------------
+Synthesised conjectures (not proved): 
+-----------------------
+AC-properties found: 
+x @ y @ z = x @ (y @ z)
+
+ False conjectures synthesised: 74
+
+-----------------------
+Size 8: sloooower
+-----------------------
+Synthesised theorems: 
+a @ [] = a
+rev rev a = a
+-----------------------
+Synthesised conjectures (not proved): 
+-----------------------
+AC-properties found: 
+x @ y @ z = x @ (y @ z)
+
+ False conjectures synthesised: 1022
+
+-----------------------
+Size 10: 
+-----------------------
+Synthesised theorems: 
+a @ [] = a
+rev rev a = a
+map a rev b = rev (map a b)
+rev (map a b) = map a rev b
+rev (map a rev b) = map a b
+rev a @ rev b = rev (b @ a)
+rev (a @ rev b) = b @ rev a
+rev (rev a @ rev b) = b @ a
+-----------------------
+Synthesised conjectures (not proved): 
+rev a @ rev a = rev (a @ a)
+rev (a @ rev a) = a @ rev a
+rev (rev a @ a) = rev a @ a
+rev (rev a @ b) = rev b @ a
+rev (rev a @ rev a) = a @ a
+-----------------------
+AC-properties found: 
+x @ y @ z = x @ (y @ z)
+-----------------------
+Commuted versions of defs: 
+
+ False conjectures synthesised: 3073
+
+(* With variable restriction on rhs and 2 variables allowed. 
+	 Note fix to catch ERROR in counter example checker, for some
+	 higher-order things. Now assumes those are false. *)
+
+
+------------------------------------------------------------------------------
+Test on Synthesise.thy, a big theory with lists and nats.
+-----------------------------------------------------------------------------
+Size 4:
+-----------------------
+Synthesised theorems: 
+-----------------------
+Synthesised conjectures (not proved): 
+-----------------------
+AC-properties found: 
+x @ y @ z = x @ (y @ z)
+x * y * z = x * (y * z)
+x * y = y * x
+x + y + z = x + (y + z)
+x + y = y + x
+
+ False conjectures synthesised: 32
+
+Size 5: Appers to loop in some proof.
+
+Size 6: 
+-----------------------

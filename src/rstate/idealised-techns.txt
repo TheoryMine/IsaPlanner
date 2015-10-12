@@ -1,0 +1,103 @@
+
+{base_case:g, step_case:g} |- induction : {X:g}
+{condition:g, rippling:g, blocked:g} |- ripple_step : {X:g}
+{simplified_goal:g} |- simpliciation : {X:g}
+
+(* -=-=-=-=-=-=-=- *)
+(* reversed application notation *)
+{X:g} :: induction -| {base_case:g, {IH:a |- step_case:g}}
+
+{skeleton:a |- goal:g} :: ripple_step 
+  -| {condition:g, {skeleton:a |- rippled_goal:g}, blocked:g}
+
+{X:g} :: simpliciation -| {simplified_goal:g}
+
+
+{skeleton:a |- goal:g} :: rippling -| {skeleton:a |- blocked:g}
+rippling ==
+{skeleton:a |- goal:g} => 
+  ripplestep
+    {condition:gs => simplification => !solved,
+     {skeleton:a |- rippled_goal:g} => rippling(rippled_goal/goal),
+     blocked:g => -| blockedripple:{skeleton:a |- blocked:g}
+    }
+
+
+=> = mapthen
+-> = 1then
+
+
+{X:g} : weak_fert -| {wfert_goal:g}
+{X:g} : strong_fert -| {}
+
+strong_fert => !solved
+generalisation => [*generalised_goal]
+
+
+
+induction => [*base_case, *step_case]
+simpliciation => [*simplified_goal]
+ripple_step => [*condition, *rippling, *blocked]
+
+rippling = ripplestep => [*condition : simplification => !solved,
+                          *rippling : rippling,
+                          *blocked : [*blocked]]
+
+rippling_and_spec = 
+  ripplestep => [*condition => simplification => !solved,
+						     *rippling => rippling,
+                 *blocked => lemma_spec => [*speculated_lemmas : [*lemmas],
+                                            *fixed_ripple : rippling]]
+
+weak_fert => [*wfert_goal]
+strong_fert => !solved
+generalisation => [*generalised_goal]
+
+make_lemma => 
+
+fertilisation = orelse{strong_fert => !solved,
+                       weak_fert => [*weakfertilisation]}
+
+induct_and_ripple = 
+  induction=>[*base_case : simplification => [*unsolved_basecase],
+              *step_case :
+                rippling => 
+                orelse{fertilisation => [*weak_fertilised_stepcase],
+                       [*blocked_ripples]}
+
+induct_and_ripple_and_spec = 
+  induction=>[*base_case : simplification => [*unsolved_basecase],
+              *step_case :
+                rippling => 
+                orelse{fertilisation => [*weak_fertilised_stepcase],
+                       }
+
+induct_ripple_and_conj = 
+  induct_and_ripple => 
+    [*unsolved_basecase : generalise => induct_ripple_and_conj,
+     *weak_fertilised_stepcase : 
+     *blocked_ripples :
+
+
+ripplestep_fwd => [F:newfact, G:condition]
+
+rippling_fwd = 
+  ripplestep_fwd => [F:newfact => orelse{?enough => [F:newfact], 
+                                         rippling_fwd},
+                     G:condition => resolve_with_fact => !solved]
+
+
+induction => [G:base_case
+              G:(IH |- SC) == step_case]
+
+induct_and_rel_ripple = 
+  induction => [G:base_case => simplify => !solved,
+                G:step_case => relrippling => !solved]
+
+impl_relrippling =
+  [(A |- B) |- (A' |- B') => rippling_fwd
+
+relrippling =
+  [(IH |- SC): orelse{impl_relrippling => !solved
+	                    ripple_bck => !solved
+

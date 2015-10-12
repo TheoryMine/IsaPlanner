@@ -1,0 +1,36 @@
+
+  {a: N, b: N.
+   |- AddCommute: "a + b = b + a"
+      by (tac Induction on: a ) to BaseCase StepCase
+
+      {c: N.
+       |- BaseCase: "0 + c = c + 0"
+          by (tac simp (no_asm_changes)) to: BaseCase2
+          BaseCase2: "c = c + 0"
+          [? gap ?]}
+
+      {c: N, d: N.
+       {e: N. 
+        |- InductHyp: "c + e = e + c"}
+       |- StepCase: "suc c + d = d + suc c"
+          [? gap ?]}}
+      
+
+  {ALL a : N, b : N.
+   |- AddCommute: "a + b = b + a"
+      [by (tac Induction on: a ) to: BaseCase StepCase]
+
+      {ALL c : N.
+       |- BaseCase: "0 + c = c + 0"
+          [by (tac simp (no_asm_changes)) to: BaseCase2]
+          BaseCase2: "c = c + 0"
+          [? gap]}
+
+      {ALL c : N, d : N.
+       {ALL e : N. 
+        |- InductHyp: "c + e = e + c"}
+       |- StepCase: "suc c + d = d + suc c"
+          [? gap]}}
+
+   {... |- ... }
+      

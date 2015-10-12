@@ -1,0 +1,33 @@
+
+## targets
+
+PSESSION = multiset
+SESSION = dedsynth
+
+default: $(SESSION)
+test: $(SESSION)-test
+
+## global settings
+
+SRC = $(ISABELLE_HOME)/src
+OUT = $(ISABELLE_OUTPUT)
+LOG = $(OUT)/log
+
+USEDIR = $(ISATOOL) usedir -v true -s $(SESSION)-test
+MAKEDIRIMG = $(ISATOOL) usedir -b -r -v true -s $(SESSION)
+
+## 
+
+$(SESSION): $(LOG)/$(SESSION).gz
+$(SESSION)-test: $(LOG)/$(SESSION)-test.gz
+
+$(LOG)/$(SESSION).gz: ROOT.ML *.ML */*.ML $(LOG)/$(PSESSION).gz
+	@$(MAKEDIRIMG) multiset $(SESSION)
+
+$(LOG)/$(SESSION)-test.gz: ROOT.ML *.ML */*.ML $(LOG)/$(PSESSION).gz
+	@$(USEDIR) multiset ./
+
+## clean
+
+clean:
+	@rm -f $(LOG)/$(SESSION).gz; rm -f $(LOG)/$(SESSION)-test.gz

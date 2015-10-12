@@ -1,0 +1,116 @@
+(* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *) 
+(*  Proof Graphs                                                       *)
+(* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *) 
+
+These are graphs of results and methods. Meta variables are held
+outside the theorem objects, and are shared acrross a proof
+graph. Meta variables are free ones that are listed as being
+instantiatable. This allows invalid/unjustified steps to be introduced
+and removed. Working in a theorem object only allows bad subgoal to be
+introduced, not removed. Removal would require maintaining of
+dependencies to see that they were indeed not needed. With the graph
+representation we are able to manage these dependencies directly. I
+think we also escape the milner/hindley polymorphism limitations this
+way. 
+
+Note: we want to use abstract data type to make sure that our
+graphs have some properties:
+
+ - g0 -> g1: interpreted as dependency, prove g0 first. 
+
+ - th0 -> m0 -> th1, th0 -> m1 -> th2: interpretted as independent
+ forward derivation of results. Note that forward derivation uses the
+ assumptions but not the conclusion. 
+
+ - th0 -> m0 -> th1, th0 -> m1 -> th2: interpretted as independent or
+ choices in a derivation - this should not happen - instead we should
+ split the graph when this happens to show the independence of
+ instantiation choices.
+
+ - th0 -> m0 -> th1, th0 -> m0 -> th2: interpreted as method applied to
+ previous goal "th0", results in new goals ("th1" and "th2"). 
+
+ - id's are the keys and are unique 
+
+ - meta vars are global over a proof attempt
+
+
+------------------------------------------------------------------------
+TODO
+------------------------------------------------------------------------
+1. Maybe put fixes in a certified form as well as sgn in the
+graph nodes to save re-computation.
+2. Provide a consitent ordering: always have (types, terms) 
+
+------------------------------------------------------------------------
+Comparison with theorem level tools
+------------------------------------------------------------------------
+Assumption selection for theorem objects in linear. For our graphs it
+is logarithmic. The effect on dependency management etc is probably
+similarly more efficient in our approach. This will make our machinary
+better, especially when you have many assumptions. 
+
+
+------------------------------------------------------------------------
+graphs as proofs or proof plans...? 
+------------------------------------------------------------------------
+If they are proof plans, what arguments do the methods take? One node,
+mulitple? Then have questions of compositionality. 
+
+
+------------------------------------------------------------------------
+Graphs as plans: Question of method expressivity/compositionality
+------------------------------------------------------------------------
+We assume methods are part of the proof graph. If methods can effect
+the whole graph then they are not compositional in the sense that the
+order of unfolding methods is important. If on the other hand we limit
+their expressivity, then we cannot capture proof critics. Maybe have
+two kinds of methods? 
+
+This give us a notion of completeness for search of proof planning
+methods. If methods are not compositional then we need to search all
+orderings for completeness. On the hand, we only need to search each
+methods space once when they are compositional. Thus is makes sense to
+flag, as a method is applied whether its compositional, and ideally to
+have some declarative notion of its effect. Possibly, we could catch
+points of non-compositionality and then search of just the orderings
+of these. However, in practice many things which could in theory
+effect each other don't in practice. For example, adding rules to the
+simplification set *can* break another proof attempt, but usually
+doesn't. Thus it becomes very inconvenient and slow to treat methods
+non-compositionally. By storing methods behaviour carefully, we can
+see exactly what dependency issues arrise - maybe this would allow us
+to manage the non-compositional behaviour. 
+
+
+
+------------------------------------------------------------------------
+Lazy instantiations
+------------------------------------------------------------------------
+We hold a table of variable instantiations. When we resolve we update
+the table, but not the nodes impacted by it. These can be updated when
+they are visited. This allows a lazy treatment of variable
+instantiation. *)
+
+
+------------------------------------------------------------------------
+Discussion on the "othm" object and milner-hindley polymorphism:
+------------------------------------------------------------------------
+Note: Due to the limits of milner-hindley polymorphism (and thus of
+the Isabelle meta logic, namely HOL), the othm object (the fake
+theorem to use, as a placeholder for when we actually manage to prove
+the goal) in a node must have frozen type variables. In particular,
+the hidden assumptions must contain the same types, as we cannot
+distinguish them with binders, and we must also enforce that the
+hidden assumptions dont have type variables. Thus the conclusion
+cannot either. -- maybe we can work around this with some clever
+management of type variables, and updating the outer theorem as needed
+for the goal at hand - ie post unification we find out what we need
+and make a special extra version, which we'll later justify when we
+actually do prove the result.
+
+Thus to actually use an "othm" we need to introduce its hypothesis,
+varify the theorem, find the type instantiations and create a new
+version that will latter be justified by the proved goalnode. If a
+goalnode is proved correct, then we can have a correct othm object
+without any hidden assumptions - and no extra work is needed.

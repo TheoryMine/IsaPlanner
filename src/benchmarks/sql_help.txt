@@ -1,0 +1,121 @@
+File with handy commands for manipulating output from the benchmarking.
+
+
+
+(* Stick all results into one file *)
+cat */*.sql >> allresults.sql
+
+
+(* Access database *)
+psql -h {databaseurl} -d {databasename} -U {user} -f {file}
+
+(* Create the table we want to put the results in *)
+
+
+CREATE SEQUENCE isa_spec_results_sq;
+
+CREATE TABLE isa_spec_results
+ (id INTEGER PRIMARY KEY DEFAULT NEXTVAL('isa_case_results_sq'),
+  techn VARCHAR(255),
+  thry VARCHAR(255),
+  prob VARCHAR(255),
+  term VARCHAR(255),
+  solved INTEGER,
+  time FLOAT,
+  timeout INTEGER,
+  exp INTEGER,
+  spec INTEGER
+ );
+SELECT term, time FROM isa_spec_results
+WHERE solved =1;
+
+SELECT term FROM isa_case_results
+WHERE solved =1 and techn = 'simp' and 
+(thry = 'CaseAnalysis_L' or thry = 'Tree_size_height');
+
+SELECT term, time FROM isa_case_results
+WHERE techn = 'rippling' and 
+ thry = 'Tree_size_heigth2';
+
+SELECT term, time FROM isapres_results
+WHERE solved =0 and techn = 'rippling' and 
+(thry = 'CaseAnalysis_L2' or thry = 'Tree_size_height2');
+
+SELECT term, time FROM isapres_results
+WHERE solved =0 and techn = 'ripple_calc' and 
+(thry = 'CaseAnalysis_L2' or thry = 'Tree_size_height2');
+
+SELECT term, time FROM isa_case_results
+WHERE solved =0 and techn = 'simp' and 
+(thry = 'CaseAnalysis_L2' or thry = 'Tree_size_height2');
+
+SELECT term FROM isa_case_results
+WHERE solved =0 and techn = 'rippling';
+
+SELECT a.term FROM isapres_results as a, isapres_results as b
+WHERE a.techn = 'rippling' and 
+  (a.prob = b.prob and a.solved = 0
+   and b.solved =1 and b.techn = 'ripple_calc')
+   and (a.thry  = 'CaseAnalysis_L2' or a.thry = 'Tree_size_height2')
+   and (b.thry  = 'CaseAnalysis_L2' or b.thry = 'Tree_size_height2'); 
+
+SELECT a.term FROM isa_case_results as a, isa_case_results as b
+WHERE a.techn = 'rippling' and 
+  (a.prob = b.prob and a.solved = 0
+   and b.solved =1 and b.techn = 'simp')
+   and (a.thry  = 'CaseAnalysis_L2' or a.thry = 'Tree_size_heigth2')
+   and (b.thry  = 'CaseAnalysis_L2' or b.thry = 'Tree_size_heigth2');
+ 
+SELECT a.term FROM isa_case_results as a, isa_case_results as b
+WHERE (a.thry  = 'CaseAnalysis_L2' or a.thry = 'Tree_size_heigth2') and 
+  a.prob = b.prob and a.solved = 0 and a.techn ='rippling'
+   and b.solved =1 and b.techn = 'rippling'
+   and (b.thry  = 'CaseAnalysis_L' or b.thry = 'Tree_size_heigth'); 
+
+SELECT a.term FROM isa_case_results as a, isa_case_results as b
+WHERE a.techn = 'rippling' and 
+  (a.prob = b.prob and a.solved = 0
+   and b.solved =1 and b.techn = 'simp'); 
+   
+
+SELECT term, time FROM isa_case_results
+WHERE solved =1 and techn = 'ripple_lemcalc';
+
+SELECT term, time FROM isa_case_results
+WHERE time (select time solved =0 and techn = 'ripple_grouped_flow';
+
+SELECT term, time FROM isa_case_results
+WHERE solved =0 and techn = 'ripple_lemcalc';
+
+SELECT term, time FROM isa_spec_results
+WHERE solved =0;
+
+
+SELECT term, time FROM isa_case_results
+WHERE solved =1;
+
+SELECT solved, thry, term, timeout  
+FROM isapres_results WHERE spec=1
+ORDER BY thry;
+
+SELECT spec, solved, thry, term, timeout, exp 
+FROM isapres_results WHERE spec=1
+ORDER BY thry;
+
+SELECT solved, thry, term, timeout  
+FROM isapres_results 
+WHERE spec=1 and solved=1
+ORDER BY thry;
+
+SELECT distinct term, prob, time
+FROM isapres_results 
+WHERE spec=1;
+
+SELECT distinct term, prob, timeout, exp 
+FROM isapres_results
+WHERE solved=0 and spec=1
+
+(* Get all problems not solved in any theory *)
+SELECT distinct term, prob 
+FROM isapres_results
+WHERE prob not in (SELECT distinct prob FROM isapres_results WHERE solved =1);

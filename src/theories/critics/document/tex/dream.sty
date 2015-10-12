@@ -1,0 +1,334 @@
+% LaTeX2e packaging by img/mrg/sep-97.  
+%
+% (See the end of this file for user documentation.)
+%
+%
+% added \WaveFrontSpacing: use \setlength{\WaveFrontSpacing}{..}.
+% macro definitions for dream logos and other dream specific things
+
+% changed by img 13-mar-92 as \vec did't work under latex 14th Jan 91
+% with the nfss.  (replace % with \relax)
+% Modified img/mrg 15-feb-93 to use PostScript (via PSTricks.tex)
+%  use the command \dreamPS to use PS.
+
+% some changes by AlanS (just use italic for Clam, Oyster, etc;
+% additional def for lambda-Prolog
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{dream}[1997/09/02 img/mrg LaTeX2e package for Dream Group]
+\RequirePackage{xspace}
+%\RequirePackage{use_shield}
+
+\newif\ifBoxAndHole %true for boxes and holes; else use colourings
+
+\DeclareOption{BoxAndHoleAnnotations}{\BoxAndHoletrue}
+\DeclareOption
+  {ColouredAnnotations}%
+  {\input colordvi.tex
+   \BoxAndHolefalse
+   \def\VeryLightGray#1{\Color{0 0 0 .1}{#1}}
+   \def\LightGray#1{\Color{0 0 0 .2}{#1}}
+   \def\MidGray#1{\Color{0 0 0 .3}{#1}}
+   \def\QuiteGray#1{\Color{0 0 0 .4}{#1}}
+   \def\DarkGray#1{\Color{0 0 0 .5}{#1}}
+   \def\defaultwfcolour{CornflowerBlue}
+   \def\defaultwfoutcolour{Lavender} % default colour of outwave-fronts
+   \def\defaultwfincolour{SpringGreen} % default colour of inwave-fronts
+   \def\defaultwhcolour{White}   % default colour of holes
+   \def\defaultsinkcolour{VeryLightGray}} % default colour of sinks
+
+\DeclareOption
+  {Mono}%
+  {\ifBoxAndHole\@latex@error
+     {The Mono option only makes sense after the ColouredAnnotations option}%
+     {Please add ColouredAnnotations as one of the options before Mono}\else
+   \typeout{Setting Mono mode}
+   \def\defaultwfcolour{QuiteGray}
+   \def\defaultwfoutcolour{QuiteGray}
+   \def\defaultwfincolour{LightGray}
+   \def\defaultwhcolour{White}
+   \def\defaultsinkcolour{VeryLightGray}\fi}
+
+\ExecuteOptions{BoxAndHoleAnnotations}
+\ProcessOptions
+
+\newcommand{\oyster}{\textit{Oyster}\xspace}
+
+%\def\clam{{%
+%        \setbox0=\hbox{$^A$}%
+%        \setbox1=\hbox{$A$}%
+%        \dimen0=\ht1%
+%        \advance\dimen0 by-\ht0%
+%        {$CL$\kern-.25em\raise\dimen0\box0\kern-.11em$M$}}}
+
+\newcommand{\clam}{\textit{Clam}\xspace}
+\newcommand{\lprolog}{\mbox{$\lambda$Prolog}\xspace}
+\newcommand{\lclam}{\mbox{$\lambda$\textit{Clam}}\xspace}
+
+\newcommand{\whelk}{Whelk\xspace}
+\newcommand{\mollusc}{Mollusc\xspace} % added by Geraint 12 May 93
+\newcommand{\dream}{{\setbox0=\hbox{$^E$}%
+        \setbox1=\hbox{$E$}%
+        \dimen0=\ht1%
+        \advance\dimen0 by-\ht0%
+        \setbox2=\hbox{$_A$}%
+        $D$\kern-.1em$R$\kern-.09em\raise\dimen0\box0\kern-.09em%
+        \raise\dp2\box2\kern-0.09em$M$}\xspace}
+
+\renewcommand{\vec}[1]{\mbox{\setbox0=\hbox
+                {$#1$}\ifdim\wd0<1ex\makebox
+                        [1ex]{$#1$}\hspace*{-1ex}\raisebox
+                                {1.05\ht0}{\makebox
+                                        [1ex]{\tiny\rightarrowfill}}\else
+                \makebox[\wd0]{$#1$}\hspace*{-\wd0}\raisebox
+                        {1.05\ht0}{\makebox[\wd0]{\tiny\rightarrowfill}}\fi}}
+
+% annotations etc.
+\def\colourbg#1#2{\leavevmode\setbox0=\hbox{#2}\hbox
+                to 0pt {\csname#1\endcsname{\vrule
+                height\ht0
+                width\wd0
+                depth\dp0}\hss}\box0}
+\def\colourbgbis#1#2{\leavevmode\setbox0=\hbox{#2}\hbox
+                to 0pt {\csname#1\endcsname{\vrule
+                height\ht0
+                width\wd0
+                depth\dp0}\hss}\box0}
+\newlength\WaveFrontSpacing \WaveFrontSpacing=.25\fboxsep
+
+% Out bound wave front
+\long\def\fboxl#1{\leavevmode\setbox\@tempboxa\hbox{#1}\@tempdima\fboxrule
+    \advance\@tempdima \fboxsep \advance\@tempdima \dp\@tempboxa
+    \@tempdimb\@tempdima \advance\@tempdimb \ht\@tempboxa
+                         \advance\@tempdimb \fboxsep
+                         \advance\@tempdimb \fboxrule
+   \hbox{\lower \@tempdima\hbox
+        {\vbox{\hrule \@height \fboxrule
+               \hbox{\vrule \@width \fboxrule \hskip\fboxsep
+                     \vbox{\vskip\fboxsep \box\@tempboxa\vskip\fboxsep}\hskip
+                     \fboxsep}%
+               \hrule \@height \fboxrule}\relax
+        \hskip 3\fboxrule %do some dotted lines
+        \vbox to \@tempdimb
+              {\hrule \@height \fboxrule \@width 3\fboxrule
+               \vfill
+               \hrule \@height \fboxrule \@width 3\fboxrule}\hskip 3\fboxrule\relax
+        \vbox to \@tempdimb
+              {\hrule \@height \fboxrule \@width 3\fboxrule
+               \vfill
+               \hrule \@height \fboxrule \@width 3\fboxrule}}}}
+
+\long\def\fboxr#1{\leavevmode\setbox\@tempboxa\hbox{#1}\@tempdima\fboxrule
+    \advance\@tempdima \fboxsep \advance\@tempdima \dp\@tempboxa
+    \@tempdimb\@tempdima \advance\@tempdimb \ht\@tempboxa
+                         \advance\@tempdimb \fboxsep
+                         \advance\@tempdimb \fboxrule
+   \hbox{\lower \@tempdima\hbox
+         {\vbox to \@tempdimb
+              {\hrule \@height \fboxrule \@width 3\fboxrule
+               \vfill
+               \hrule \@height \fboxrule \@width 3\fboxrule}\hskip 3\fboxrule\relax
+         \vbox to \@tempdimb
+              {\hrule \@height \fboxrule \@width 3\fboxrule
+               \vfill
+               \hrule \@height \fboxrule \@width 3\fboxrule}\hskip 3\fboxrule\relax
+        \vbox{\hrule \@height \fboxrule
+               \hbox{\hskip\fboxsep
+                     \vbox{\vskip\fboxsep\box\@tempboxa\vskip\fboxsep}\relax
+                     \hskip\fboxsep
+                     \vrule\@width \fboxrule}\relax
+               \hrule \@height \fboxrule}}}}
+
+\long\def\fboxm#1{\leavevmode\setbox\@tempboxa\hbox{#1}\@tempdima\fboxrule
+    \advance\@tempdima \fboxsep \advance\@tempdima \dp\@tempboxa
+    \@tempdimb\@tempdima \advance\@tempdimb \ht\@tempboxa
+                         \advance\@tempdimb \fboxsep
+                         \advance\@tempdimb \fboxrule
+   \hbox{\lower \@tempdima\hbox
+        {\vbox to \@tempdimb
+              {\hrule \@height \fboxrule \@width 3\fboxrule
+               \vfill
+               \hrule \@height \fboxrule \@width 3\fboxrule}\hskip 3\fboxrule\relax
+         \vbox to \@tempdimb
+              {\hrule \@height \fboxrule \@width 3\fboxrule
+               \vfill
+               \hrule \@height \fboxrule \@width 3\fboxrule}\hskip 3\fboxrule\relax
+        \vbox{\hrule \@height \fboxrule
+                \hbox{\hskip\fboxsep
+                      \vbox{\vskip\fboxsep\box\@tempboxa\vskip\fboxsep}\relax
+                      \hskip\fboxsep}\relax
+                      \hrule \@height \fboxrule}\relax
+         \hskip 3\fboxrule %do some dotted lines
+         \vbox to \@tempdimb
+              {\hrule \@height \fboxrule \@width 3\fboxrule
+               \vfill
+               \hrule \@height \fboxrule \@width 3\fboxrule}\hskip 3\fboxrule\relax
+         \vbox to \@tempdimb
+              {\hrule \@height \fboxrule \@width 3\fboxrule
+               \vfill
+               \hrule \@height \fboxrule \@width 3\fboxrule}\hskip 3\fboxrule\relax}}}
+
+% enlarge a box with some height, depth and width (#2).  Box0 is used.
+\def\EnlargeBox#1#2{\setbox0=\hbox{#1}\hbox
+                  {\hskip#2\dimen0\dp0
+                        \advance\dimen0 by #2\lower\dimen0
+                        \vbox{\vskip#2\box0\vskip #2}\hskip #2 }}
+
+% A plain wave-front is a box without any arrows, but some additional
+% space is nice.  First argument is type of box to make, second arg
+% is lambda term for BoxAndHole case, third for Coloured case
+\def\wf{\@@wf{fbox}%
+             {####1{\EnlargeBox{####1}{\WaveFrontSpacing}}}%
+             {####1{\EnlargeBox{####1}{\WaveFrontSpacing}}}}
+\def\wfl{\@@wf{fboxl}%
+             {####1{\EnlargeBox{####1}{\WaveFrontSpacing}}}%
+             {####1{\EnlargeBox{####1}{\WaveFrontSpacing}}}}
+\def\wfr{\@@wf{fboxr}%
+             {####1{\EnlargeBox{####1}{\WaveFrontSpacing}}}%
+             {####1{\EnlargeBox{####1}{\WaveFrontSpacing}}}}
+\def\wfm{\@@wf{fboxm}%
+             {####1{\EnlargeBox{####1}{\WaveFrontSpacing}}}%
+             {####1{\EnlargeBox{####1}{\WaveFrontSpacing}}}}
+
+% An outward front is a box with an arrow.  Notice that the extra
+% space goes around the arrow, not between the arrow and the box, so
+% we can't call \wf here.
+\def\wfout{\@@wfout{fbox}%
+  {####1{\EnlargeBox{$####1^\uparrow$\kern-.2em }{\WaveFrontSpacing}}}%
+  {####1{\EnlargeBox{$####1^{\Black{\uparrow}}$\kern-.2em }{\WaveFrontSpacing}}}}
+\def\wfoutl{\@@wfout{fboxl}%
+  {####1{\EnlargeBox{$####1$}{\WaveFrontSpacing}}}%             <- BoxAndHole
+  {####1{\EnlargeBox{$####1$}{\WaveFrontSpacing}}}}%            <- Coloured
+\def\wfoutr{\@@wfout{fboxr}%
+  {####1{\EnlargeBox{$####1^\uparrow$\kern-.2em }{\WaveFrontSpacing}}}%
+  {####1{\EnlargeBox{$####1^{\Black{\uparrow}}$\kern-.2em }{\WaveFrontSpacing}}}}
+\def\wfoutm{\@@wfout{fboxm}%
+  {####1{\EnlargeBox{$####1$}{\WaveFrontSpacing}}}%
+  {####1{\EnlargeBox{$####1$}{\WaveFrontSpacing}}}}
+
+\def\wfin{\@@wfin{fbox}%
+  {####1{\EnlargeBox{$####1^\downarrow$\kern-.2em }{\WaveFrontSpacing}}}%
+  {####1{\EnlargeBox{$####1^{\Black{\downarrow}}$\kern-.2em }{\WaveFrontSpacing}}}}
+\def\wfinl{\@@wfin{fboxl}%
+  {####1{\EnlargeBox{$####1$}{\WaveFrontSpacing}}}%
+  {####1{\EnlargeBox{$####1$ }{\WaveFrontSpacing}}}}
+\def\wfinr{\@@wfin{fboxr}%
+  {####1{\EnlargeBox{$####1^\downarrow$\kern-.2em }{\WaveFrontSpacing}}}%
+  {####1{\EnlargeBox{$####1^{\Black{\downarrow}}$\kern-.2em }{\WaveFrontSpacing}}}}
+\def\wfinm{\@@wfin{fboxm}%
+  {####1{\EnlargeBox{$####1$}{\WaveFrontSpacing}}}%
+  {####1{\EnlargeBox{$####1$}{\WaveFrontSpacing}}}}
+
+
+% Make a wave-front. The first arg is the type of box to make. The
+% second and third aruguments are 
+% `functions' mapping boxes to boxes.  The former is used when
+% BoxAndHole is true and the latter when its false.
+\def\@@wf#1#2#3{\@ifnextchar[{\@wf{#1}{#2}{#3}}%
+                     {\@wf{#1}{#2}{#3}[\defaultwfoutcolour]}}
+\def\@@wfout#1#2#3{\@ifnextchar[{\@wf{#1}{#2}{#3}}%
+                     {\@wf{#1}{#2}{#3}[\defaultwfoutcolour]}}
+\def\@@wfin#1#2#3{\@ifnextchar[{\@wf{#1}{#2}{#3}}%
+                     {\@wf{#1}{#2}{#3}[\defaultwfincolour]}}
+
+\def\@wf#1#2#3[#4]#5{\setbox0=\hbox
+  {\ifBoxAndHole\csname#1\endcsname{$#5$}\else
+      {\fboxrule=0pt\colourbg{#4}{\csname#1\endcsname{$#5$}}}\fi}%      
+  \ifBoxAndHole\def\dummy#2\relax\else\def\dummy#3\relax\fi
+  % need copy0 below since \dummy may call upon \box0 multiple times!
+  \dummy{\copy 0}} %higher-order TeX
+
+\newcommand{\pwf}[1]{{\countdef\tx=10
+                     \countdef\ty=11
+                     \dimendef\drop=10
+        \setbox0\hbox{$#1$}\drop=\dp0
+        \setbox0\hbox{\hskip\fboxsep\vbox{\vskip\fboxsep
+                \box0\vskip\fboxsep}\hskip\fboxsep}\tx=\wd0
+        \ty=\ht0 \advance\ty by \dp0 % Y size
+        \divide \tx \unitlength      % number of units X
+        \divide \ty  \unitlength     % number of units Y
+        \ifodd\tx \advance \tx by 1\fi % for better results (see LaTeX manual)
+        \ifodd\ty \advance \ty by 1\fi
+        \advance\drop by \fboxsep
+        \setbox1=\hbox{\dashbox{2}(\tx,\ty){\copy0}}\hbox{\lower\drop\box1}}}
+
+\newcommand{\pwfout}[1]{\pwf{#1}^\uparrow}
+\newcommand{\pwfin}[1]{\pwf{#1}^\downarrow}
+
+% wave hole
+\def\wh{\@ifnextchar[{\@wh}{\@wh[\defaultwhcolour]}}
+\def\@wh[#1]#2{\setbox0=\hbox{$#2$}%
+                \ifBoxAndHole\underline{\box0}\else
+                   \colourbg{#1}{\EnlargeBox{\box0}{1pt}}\fi }
+
+
+% Sink
+\def\sink{\@ifnextchar[{\@sink}{\@sink[\defaultsinkcolour]}}
+\def\@sink[#1]#2{\ifBoxAndHole
+                        \hbox{$\left\lfloor #2 \right\rfloor$}\else
+                        \colourbg{#1}{\EnlargeBox{$#2$}{1pt}}\fi }
+
+%\input dreambib.sty
+\endinput
+
+%% User-level documentation
+
+This (LaTeX2e) package defines a number of macros that should be used
+to set logos, annotations and so on, so as to provide a consisten
+corporate identity in papers, reports and so on.
+
+* \clam, \mollusc, \oyster, \whelk should be used for the names of
+  those systems.
+* \vec set its argument with a pointed arrow above.
+
+* The package accepts some options, used as shown below:
+
+                \usepackage[ColouredAnnotations]{dream}
+or
+                \usepackage[BoxAndHoleAnnotations]{dream}
+
+The first of these gives coloured annotations as described in AlanB's
+BB note 1042 (via postscript: the file colordvi.sty is loaded for this
+purpose).  The second gives the more familiar box and hole
+annotations.  With ColouredAnnotations, one can restrict the colours
+to black and white with the further option Mono.  For example:
+
+                \usepackage[ColouredAnnotations,Mono]{dream}
+
+The dream-note class knows to pass these options to the dream
+package, so it is also possible to use:
+
+                \documentclass[ColouredAnnotations]{blue-book}
+
+for example.  The top-level macros you are likely to use for
+annotations are:
+
+\wf{..}                 plain wave front (no direction)
+\wfout{..}              outward wave front
+\wfin{..}               inward wave front
+
+\wh{..}                 wave-hole
+
+\sink{..}               sink
+
+All of the above have an optional first argument to select a colour
+for the annotation other than the default.  This option silently fails
+if the option ColouredAnnotations is not made.  For example:
+
+        \wfout[Yellow]{..}
+
+will give a yellow wave-front.  
+
+The following are for fragments:
+
+\wfl{..}                left part of wave-front
+\wfm{..}                middle part of wave-front
+\wfr{..}                right part of wave-front
+
+Similarly, there are \wfoutl{..} commands etc.
+
+---
+NOTE: There are still some problems concerning the presentation of
+wave-front fragments with the ColouredAnnotions option. (Wave-front
+fragments are for drawing a wave-front across multiple lines.)
+

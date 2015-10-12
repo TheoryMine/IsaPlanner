@@ -1,0 +1,21 @@
+This is a list of important things to be done:
+
+1. rewrite InstEnv, and Prf to fit remaing signature so that they
+can be renamed and composed.
+
+2. rewrite Isabelle tactic integration: use composable prf, fix
+meta-varaiables in this process if they occur in assumptions. Allow
+tactic integration to be given list of assumptions.
+
+3. Fix double-lifting in prf; fix double lifting in subst.
+
+4. Provide full Isar interfaces.
+
+5. Fix tactic language to use statically named goals.
+
+6. Write fully composable zipper-based rewriting/update rippling
+appropriately.
+
+7. Rewrite planning tactics and graphical integration.
+
+8. Write parser for tactic language.

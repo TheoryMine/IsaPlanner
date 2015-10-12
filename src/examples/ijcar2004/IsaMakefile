@@ -1,0 +1,36 @@
+
+## targets
+
+default: ijcar
+images: ijcar-img
+test: ijcar
+
+all: images test
+
+## global settings
+
+SRC = $(ISABELLE_HOME)/src
+OUT = $(ISABELLE_OUTPUT)
+LOG = $(OUT)/log
+
+USEDIR = $(ISATOOL) usedir -v true -i true -d pdf -D generated -s ijcar
+BUILDIMAGE = cd src; $(ISATOOL) usedir -b -v true -s ijcar
+
+## in order that heaps and browser info be put in *this* directory...
+ISABELLE_BROWSER_INFO=./browser_info
+
+## theories
+
+ijcar: $(LOG)/ijcar.gz
+ijcar-img: $(LOG)/ijcar-img.gz
+
+$(LOG)/ijcar.gz: ./ROOT.ML ./document/root.tex ./*.thy
+	@$(USEDIR) HOL_IsaP ./
+
+$(LOG)/ijcar-img.gz: ./ROOT.ML ./document/root.tex ./*.thy
+	@$(BUILDIMAGE) HOL_IsaP HOL_IsaP_ijcar
+
+## clean
+
+clean:
+	@rm -f $(LOG)/ijcar.gz; @rm -f $(LOG)/ijcar-img.gz

@@ -1,0 +1,40 @@
+TODO SOON
+
+- Create flex-flex containt managing code
+
+- Separate contraint code from main proof code. 
+
+
+NICE/LOW PRIORITY
+
+- Make fresh names support numerical postfixes, which are inremented
+and decremented appropriately. "pred a0 = a_1" and "pred a_1 = a_2"
+etc and "suc a2 = a3" and "suc a9 = a10", etc.
+
+- Add Thm object justification records to method applications to allow
+easy re-consturction of Isabelle Thm object.
+
+- Change basic subst tactic so that redundent flexflex pairs are not
+created.
+
+- Separate inherited asms and fixed params from those made
+locally. 
+
+
+BIG/FAR-AWAY
+
+- Create a notion of neested scopes to allow renaming of scoped things
+efficiently. Proper proof manipulation! Then add notion of local
+result within a scope - allowing forward proof as expected.
+
+
+SMALL/IRRELEVENT:
+
+- manage dependencies between fixes vars and assumption in order to
+optimise use of names for fixed things.
+
+
+DONE 
+
+- When a variable is instantiated to another variable, making it no
+more specific, then re-use the old name -- lucas 24 Jan. 06. 
