@@ -3,10 +3,10 @@ struct
 
 (* Set assumptions according to Gudmund's schemes*)
 val setmem = Thm.term_of @{cpat "Set.member :: X => (X => bool) => bool"};
-val arrow = Const ("==>", @{typ"prop => prop => prop"})
-val trueprop = Const ("HOL.Trueprop", @{typ "bool => prop"})
-val forest = Const ("QRELind3.Forest", @{typ "(X \<times> X => bool) => bool"});
-val roots = Const ("QRELind3.roots", @{typ "(X \<times> X => bool) => X => bool" });
+val arrow = Const (@{const_name "==>"}, @{typ"prop => prop => prop"})
+val trueprop = Const (@{const_name "HOL.Trueprop"}, @{typ "bool => prop"})
+val forest = Const (@{const_name "QRELind3.Forest"}, @{typ "(X \<times> X => bool) => bool"});
+val roots = Const (@{const_name "QRELind3.roots"}, @{typ "(X \<times> X => bool) => X => bool" });
 val not = @{term "HOL.Not"};
 val eq = Thm.term_of @{cpat "HOL.eq :: X => X => bool"};
 

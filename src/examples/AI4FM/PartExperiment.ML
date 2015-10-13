@@ -1,9 +1,9 @@
 structure PartExperiment =
 struct
 
-val arrow = Const ("==>", @{typ"prop => prop => prop"})
-val trueprop = Const ("HOL.Trueprop", @{typ "bool => prop"})
-val partition = Const("PartTac.PPart", @{typ "xpset => bool"}) 
+val arrow = Const (@{const_name Pure.imp}, @{typ"prop => prop => prop"})
+val trueprop = Const (@{const_name "HOL.Trueprop"}, @{typ "bool => prop"})
+val partition = Const(@{const_name "PartTac.PPart"}, @{typ "xpset => bool"}) 
 
 fun set_ppart_asm concl (pparnm,ptyp) =
       arrow $ (trueprop $ (partition $ Free (pparnm, ptyp))) $ concl;

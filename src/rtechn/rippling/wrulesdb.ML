@@ -540,7 +540,7 @@ and invalid wrules *)
       end;
 
 
-(* changes object "=" to meta "==" which prepares a given rewrite rule *)
+(* changes object level "HOL.eq" to meta "Pure.eq" which prepares a given rewrite rule *)
 fun prep_meta_eq ctxt =
   Simplifier.mksimps ctxt #> map Drule.zero_var_indexes;
 

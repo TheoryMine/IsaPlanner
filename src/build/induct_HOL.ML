@@ -25,7 +25,7 @@ structure HOLDatatypeIndScheme
   fun ind_thms (scheme rep) = #all_ind_thms rep;
 
   fun lookup thy s = 
-      (case (Old_Datatype_Data.get_info thy s) of
+      (case (BNF_LFP_Compat.get_info thy [] s) of
         NONE => NONE
       | SOME di => SOME (scheme {default_ind_thm = #induct di,
                                  all_ind_thms = [#induct di]}));

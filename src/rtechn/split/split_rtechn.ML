@@ -135,7 +135,7 @@ fun get_cases_of pp goal =
       val thry = PPlan.get_theory pp;
       val t = Prf.get_ndname_ctrm pp goal;
       (* TODO(Isabelle2015): not sure if this is the right datatype package *)
-      val dtypestab = Old_Datatype_Data.get_all thry;
+      val dtypestab = BNF_LFP_Compat.get_all thry [];
 
       (* Pairs type-string * datatype_info.*)
       val datatypes = Symtab.dest dtypestab;

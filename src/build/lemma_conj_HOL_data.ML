@@ -13,17 +13,17 @@
 structure HOL_LemmaConjData : LEMMA_CONJ_DATA
 = struct
 
-fun dest_eq_term (((c as Const("HOL.eq", ty)) $ l) $ r) = SOME (c, l,r)
-  | dest_eq_term (((c as Const("==", ty)) $ l) $ r) = SOME (c, l,r)
+fun dest_eq_term (((c as Const(@{const_name HOL.eq}, ty)) $ l) $ r) = SOME (c, l,r)
+  | dest_eq_term (((c as Const(@{const_name Pure.eq}, ty)) $ l) $ r) = SOME (c, l,r)
   | dest_eq_term _ = NONE;
 
-fun dest_obj_eq_term (((c as Const("HOL.eq", ty)) $ l) $ r) = SOME (c, l,r)
+fun dest_obj_eq_term (((c as Const(@{const_name HOL.eq}, ty)) $ l) $ r) = SOME (c, l,r)
   | dest_obj_eq_term _ = NONE;
 
-fun dest_rw (((Const("==", ty)) $ l) $ r) = SOME (l, r)
-  | dest_rw (((Const("HOL.eq", ty)) $ l) $ r) = SOME (l, r)
-  | dest_rw (((Const("HOL.implies", ty)) $ r) $ l) = SOME (r, l)
-  | dest_rw (((c as Const("==>", ty)) $ r) $ l) = SOME (r, l)
+fun dest_rw (((Const(@{const_name Pure.eq}, ty)) $ l) $ r) = SOME (l, r)
+  | dest_rw (((Const(@{const_name HOL.eq}, ty)) $ l) $ r) = SOME (l, r)
+  | dest_rw (((Const(@{const_name HOL.implies}, ty)) $ r) $ l) = SOME (r, l)
+  | dest_rw (((c as Const(@{const_name Pure.imp}, ty)) $ r) $ l) = SOME (r, l)
   | dest_rw _ = NONE;
 
 val mk_imp = HOLogic.mk_imp;
@@ -33,15 +33,15 @@ val mk_meta_eq = Logic.mk_equals;
 val mk_Trueprop = HOLogic.mk_Trueprop;
 val dest_Trueprop = HOLogic.dest_Trueprop;
 
-fun try_dest_Trueprop (Const("HOL.Trueprop", _) $ T) = T
+fun try_dest_Trueprop (Const(@{const_name HOL.Trueprop}, _) $ T) = T
     | try_dest_Trueprop T = T;
-fun try_dest_Goal (Const("prop", _) $ T) = T
+fun try_dest_Goal (Const(@{const_name Pure.prop}, _) $ T) = T
     | try_dest_Goal T = T;
 
 fun try_mk_Trueprop t = 
      case Term.type_of t of
-       Type("HOL.bool", []) => HOLogic.mk_Trueprop t
-     | Type("prop", []) => t
+       Type(@{type_name "HOL.bool"}, []) => HOLogic.mk_Trueprop t
+     | Type(@{type_name prop}, []) => t
      | _ => t; 
 
 

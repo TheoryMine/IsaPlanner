@@ -52,38 +52,38 @@ fun mk_sym_eq gname ffp =
 
 
 (* is eq_name a meta-level equality? *)
-fun mlogic_is_equals (Const ("==", _) $ t $ u) = true
+fun mlogic_is_equals (Const (@{const_name Pure.eq}, _) $ t $ u) = true
   | mlogic_is_equals _ = false;
 
 
 (* Check if this zipper is an equality *)
 fun move_to_concl_eq z = 
     (case Zipper.trm z 
-      of (Const("HOL.Trueprop",ty)$x) => 
+      of (Const(@{const_name HOL.Trueprop},ty)$x) => 
          move_to_concl_eq (Zipper.move_down_right z)
-       | ((Const("==>",ty)$lhs)$rhs) => 
+       | ((Const(@{const_name Pure.imp},ty)$lhs)$rhs) => 
          move_to_concl_eq (Zipper.move_down_right z)
- (*      | ((Const("HOL.implies",ty)$lhs)$rhs) => 
+ (*      | ((Const(@{const_name HOL.implies},ty)$lhs)$rhs) => 
          move_to_concl_eq (Zipper.move_down_right z) *)
-       | ((Const("==",ty)$lhs)$rhs) => SOME z
-       | ((Const("HOL.eq",_)$lhs)$rhs) => SOME z
+       | ((Const(@{const_name Pure.eq},ty)$lhs)$rhs) => SOME z
+       | ((Const(@{const_name HOL.eq},_)$lhs)$rhs) => SOME z
        | _ => NONE);
 
 fun on_lhs_of_eq z = 
     (case Zipper.trm z
-      of (Const("==",ty)$lhs)$rhs => 
+      of (Const(@{const_name Pure.eq},ty)$lhs)$rhs => 
          z |> Zipper.move_down_left
             |> Zipper.move_down_right
-       | (Const("HOL.eq",_)$lhs)$rhs => 
+       | (Const(@{const_name HOL.eq},_)$lhs)$rhs => 
          z |> Zipper.move_down_left
             |> Zipper.move_down_right
        | _ => raise bad_term_exp "Eq_LData_HOL.on_lhs_of_eq: not an eq");
 
 fun on_rhs_of_eq z = 
     (case Zipper.trm z 
-      of (Const("==",ty)$lhs)$rhs => 
+      of (Const(@{const_name Pure.eq},ty)$lhs)$rhs => 
          z |> Zipper.move_down_right
-       | (Const("HOL.eq",_)$lhs)$rhs => 
+       | (Const(@{const_name HOL.eq},_)$lhs)$rhs => 
          z |> Zipper.move_down_right
        | _ => raise bad_term_exp "Eq_LData_HOL.on_rhs_of_eq: not an eq");
 

@@ -14,10 +14,10 @@
 structure FOL_LemmaConjData : LEMMA_CONJ_DATA = 
 struct
 
-fun rw_term_sides (((Const("HOL.eq", ty)) $ l) $ r) = SOME (l, r)
-  | rw_term_sides (((Const("op <->", ty)) $ l) $ r) = SOME (l, r)
-  | rw_term_sides (((Const("HOL.implies", ty)) $ l) $ r) = SOME (r, l)
-  | rw_term_sides (((c as Const("==>", ty)) $ l) $ r) = SOME (r, l)
+fun rw_term_sides (((Const(@{const_name FOL.eq}, ty)) $ l) $ r) = SOME (l, r)
+  | rw_term_sides (((Const(@{const_name FOL.iff}, ty)) $ l) $ r) = SOME (l, r)
+  | rw_term_sides (((Const(@{const_name FOL.implies}, ty)) $ l) $ r) = SOME (r, l)
+  | rw_term_sides (((c as Const(@{const_name Pure.imp}, ty)) $ l) $ r) = SOME (r, l)
   | rw_term_sides _ = NONE;
 
 val mk_imp = FOLogic.mk_imp;

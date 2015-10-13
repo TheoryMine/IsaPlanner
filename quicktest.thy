@@ -15,13 +15,6 @@ print_theorems
 -- {* Declare the injectivity rule for the datatype as a wave rule *}
 declare N.inject[wrule]
 
-ML {*
-Old_Datatype_Data.get_info @{theory} "N";
-(* Datatype.get_info "N"; *)
-(* BNF_Def.print_bnfs @{context};
-BNF_Def.bnf_of @{context} ""; *)
-*}
-
 -- {* Define addition for our datatype N *}
 fun add :: "N => N => N" (infixr "+" 70)
 where
