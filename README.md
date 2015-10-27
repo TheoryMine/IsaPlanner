@@ -1,4 +1,4 @@
-# IsaPlanner - a Proof Planner for Isabelle.
+# IsaPlanner 2015 - a Proof Planner for Isabelle 2015
 
 IsaPlanner is a proof planner for [Isabele](http://isabelle.in.tum.de/). It
 facilitates the encoding of reasoning techniques and their application to prove
@@ -16,6 +16,10 @@ done)
 
 You want to be familiar with [Isabele](http://isabelle.in.tum.de/) before trying
 to use IsaPlanner. :) 
+
+This version of IsaPlanner is intended to work with Isabelle 2015. 
+
+Note that IsaCoSy has not yet been ported. This work is ongoing. 
 
 
 ## Quickly playing with IsaPlanner
