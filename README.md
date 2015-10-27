@@ -1,4 +1,4 @@
-# IsaPlanner 2015 - a Proof Planner for Isabelle 2015
+# IsaPlanner - a Proof Planner for Isabelle
 
 IsaPlanner is a proof planner for [Isabele](http://isabelle.in.tum.de/). It
 facilitates the encoding of reasoning techniques and their application to prove
