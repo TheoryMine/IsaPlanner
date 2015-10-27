@@ -14,10 +14,16 @@ See the INSTALL file for more information on how to install
 IsaPlanner. (briefly, run the command "isabelle make" and you are
 done)
 
-## Installing IsaPlanner
+You want to be familiar with [Isabele](http://isabelle.in.tum.de/) before trying
+to use IsaPlanner. :) 
 
-You should be familiar with [Isabele](http://isabelle.in.tum.de/) before trying
-to use IsaPlanner.
+
+## Quickly playing with IsaPlanner
+
+Simply open the file `quicktest.thy` in Isabelle 2015.
+
+
+## Setup IsaPlanner Heap
 
 To use IsaPlanner, you should build the heap from IsaPlanner dir by running the command:
 
@@ -31,12 +37,8 @@ theory "IsaP". Now you can make a new theory that imports "IsaP" and in that
 theory you can use IsaPlanner.
 
 
-## Playing with IsaPlanner
-
-See `quicktest.thy`: you'll need to start Isabelle after you have this
-file opened - otherwise Isabelle will get confused about paths.
-
-
 ## Developing new techniques
 
 You'll be doing ML programming in Isabelle, so make sure to have the [Isabelle CookBook](http://www.dcs.kcl.ac.uk/staff/urbanc/Cookbook/) handy.
+
+TODO: complete this section. :) 
