@@ -182,7 +182,7 @@ fun lemmaspec_eq skels goal rst =
 
 fun move_below_Trueprop z =
     (case Zipper.trm z 
-      of (Const("HOL.Trueprop",ty)$x) => 
+      of (Const(@{const_name "HOL.Trueprop"},ty)$x) => 
           move_below_Trueprop (Zipper.move_down_right z)
        | _ => z);
 

@@ -90,7 +90,7 @@ structure RRTrmUtil : RRTRM_UTIL =
 
     fun combinator_name trm =
           let
-            fun try_dest_Trueprop (Const ("HOL.Trueprop", _) $ T) = T
+            fun try_dest_Trueprop (Const (@{const_name "HOL.Trueprop"}, _) $ T) = T
               | try_dest_Trueprop T = T;
 
             val comb = (fst o Term.strip_comb o try_dest_Trueprop) trm

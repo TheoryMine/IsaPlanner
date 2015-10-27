@@ -622,40 +622,6 @@ val l = oldskels
 
 *}
 
-ML {* 
-
-
-val h' =
- ((Const("Relation.Domain", Type("fun", [Type("fun", [Type("*", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("IsaPtest.Status", [])]), Type("bool", [])]), Type("fun", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("bool", [])])]))) $
- (((Const("IsaPtest.rngrestr", Type("fun", [Type("fun", [Type("*", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("IsaPtest.Status", [])]), Type("bool", [])]), Type("fun", [Type("fun", [Type("IsaPtest.Status", []), Type("bool", [])]), Type("fun", [Type("*", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("IsaPtest.Status", [])]), Type("bool", [])])])]))) $
- (((Const("IsaPtest.forwardcomp", Type("fun", [Type("fun", [Type("*", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("*", [Type("IsaPtest.Status", []), Type("List.list", [Type("IsaPtest.Digit", [])])])]), Type("bool", [])]), Type("fun", [Type("fun", [Type("*", [Type("*", [Type("IsaPtest.Status", []), Type("List.list", [Type("IsaPtest.Digit", [])])]), Type("IsaPtest.Status", [])]), Type("bool", [])]), Type("fun", [Type("*", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("IsaPtest.Status", [])]), Type("bool", [])])])]))) $
- (Const("IsaPtest.call", Type("fun", [Type("*", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("*", [Type("IsaPtest.Status", []), Type("List.list", [Type("IsaPtest.Digit", [])])])]), Type("bool", [])])))) $
- (Const("IsaPtest.st", Type("fun", [Type("*", [Type("*", [Type("IsaPtest.Status", []), Type("List.list", [Type("IsaPtest.Digit", [])])]), Type("IsaPtest.Status", [])]), Type("bool", [])]))))) $
- (Const("IsaPtest.Connected", Type("fun", [Type("IsaPtest.Status", []), Type("bool", [])])))));
-
-
-val j' =
- ((Const("Relation.Domain", Type("fun", [Type("fun", [Type("*", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("IsaPtest.Status", [])]), Type("bool", [])]), Type("fun", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("bool", [])])]))) $
- (((Const("IsaPtest.rngrestr", Type("fun", [Type("fun", [Type("*", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("IsaPtest.Status", [])]), Type("bool", [])]), Type("fun", [Type("fun", [Type("IsaPtest.Status", []), Type("bool", [])]), Type("fun", [Type("*", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("IsaPtest.Status", [])]), Type("bool", [])])])]))) $
- (((Const("IsaPtest.forwardcomp", Type("fun", [Type("fun", [Type("*", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("*", [Type("IsaPtest.Status", []), Type("List.list", [Type("IsaPtest.Digit", [])])])]), Type("bool", [])]), Type("fun", [Type("fun", [Type("*", [Type("*", [Type("IsaPtest.Status", []), Type("List.list", [Type("IsaPtest.Digit", [])])]), Type("IsaPtest.Status", [])]), Type("bool", [])]), Type("fun", [Type("*", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("IsaPtest.Status", [])]), Type("bool", [])])])]))) $
- (((Const("Lattices.upper_semilattice_class.sup", Type("fun", [Type("fun", [Type("*", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("*", [Type("IsaPtest.Status", []), Type("List.list", [Type("IsaPtest.Digit", [])])])]), Type("bool", [])]), Type("fun", [Type("fun", [Type("*", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("*", [Type("IsaPtest.Status", []), Type("List.list", [Type("IsaPtest.Digit", [])])])]), Type("bool", [])]), Type("fun", [Type("*", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("*", [Type("IsaPtest.Status", []), Type("List.list", [Type("IsaPtest.Digit", [])])])]), Type("bool", [])])])]))) $
- (Const("IsaPtest.call", Type("fun", [Type("*", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("*", [Type("IsaPtest.Status", []), Type("List.list", [Type("IsaPtest.Digit", [])])])]), Type("bool", [])])))) $
- (((Const("Set.insert", Type("fun", [Type("*", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("*", [Type("IsaPtest.Status", []), Type("List.list", [Type("IsaPtest.Digit", [])])])]), Type("fun", [Type("fun", [Type("*", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("*", [Type("IsaPtest.Status", []), Type("List.list", [Type("IsaPtest.Digit", [])])])]), Type("bool", [])]), Type("fun", [Type("*", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("*", [Type("IsaPtest.Status", []), Type("List.list", [Type("IsaPtest.Digit", [])])])]), Type("bool", [])])])]))) $
- (((Const("Pair", Type("fun", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("fun", [Type("*", [Type("IsaPtest.Status", []), Type("List.list", [Type("IsaPtest.Digit", [])])]), Type("*", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("*", [Type("IsaPtest.Status", []), Type("List.list", [Type("IsaPtest.Digit", [])])])])])]))) $
- (Free("s", Type("List.list", [Type("IsaPtest.Digit", [])])))) $
- (((Const("Pair", Type("fun", [Type("IsaPtest.Status", []), Type("fun", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("*", [Type("IsaPtest.Status", []), Type("List.list", [Type("IsaPtest.Digit", [])])])])]))) $
- (Const("IsaPtest.Status.seize", Type("IsaPtest.Status", [])))) $
- (Const("List.list.Nil", Type("List.list", [Type("IsaPtest.Digit", [])])))))) $
- (Const("Orderings.bot_class.bot", Type("fun", [Type("*", [Type("List.list", [Type("IsaPtest.Digit", [])]), Type("*", [Type("IsaPtest.Status", []), Type("List.list", [Type("IsaPtest.Digit", [])])])]), Type("bool", [])])))))) $
- (Const("IsaPtest.st", Type("fun", [Type("*", [Type("*", [Type("IsaPtest.Status", []), Type("List.list", [Type("IsaPtest.Digit", [])])]), Type("IsaPtest.Status", [])]), Type("bool", [])]))))) $
- (Const("IsaPtest.Connected", Type("fun", [Type("IsaPtest.Status", []), Type("bool", [])]))))));
-
-
-
-
-*}
-
-
 (* to change flow 
    - all are blocked
    - but valid rules

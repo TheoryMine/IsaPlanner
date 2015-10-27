@@ -476,7 +476,7 @@ fun list_abs_free ([ ] ,     t) = t
 
 (* Ugly hack, this had dissapeared from Isabelle's Term structure so moved it here *)
 val propT : typ = Type("prop",[]);
-fun all T = Const("all", (T-->propT)-->propT);
+fun all T = Const(@{const_name "Pure.all"}, (T-->propT)-->propT);
 
 (* FIXME: THE Below is from Isabelle2011-1, how is it different from the version above? *)
 (*fun absfree' (a, T) body = Abs (a, T, abstract_over_free (Free (a, T), body)); *)

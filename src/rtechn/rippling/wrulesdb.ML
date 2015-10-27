@@ -470,8 +470,8 @@ is a valid wave rule... *)
       orelse has_new_typ_vars (lhs,rhs)
       orelse matches_subterm thy (lhs, rhs)
       orelse (case lhs of
-               Const("HOL.True",_) => true
-             | Const("HOL.False",_) => true
+               Const(@{const_name "HOL.True"},_) => true
+             | Const(@{const_name "HOL.False"},_) => true
              | _ => false)
   (* rules are meta-equalities derived by EqRuleData from th *)
   (* Creates a list of wave rules for an equality theorem, skipping

@@ -208,7 +208,8 @@ struct
         val rhs_t = (Subst.move_to_rhs_of_eq z) |> Zipper.trm
       in (lhs_t,rhs_t)
       end handle Eq_LData_HOL.bad_term_exp _ => (Res.try_dest_Trueprop t, 
-                                                 Const ("HOL.True", Type ("HOL.bool", [])));
+                                                 Const (@{const_name "HOL.True"}, 
+                                                   Type (@{type_name "HOL.bool"}, [])));
 
   (* assumes don't care about conditions of theorem: if it's a conditional eq, it's treated simply
      as an equation. If it's not an equation, the conclusion it turned into the equation 

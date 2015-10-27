@@ -1,9 +1,3 @@
-
-(************************
- START HERE !!!
-
-***********************)
-
 signature COMMFUN =
 sig
 
@@ -217,8 +211,8 @@ Sigatures: function*commutative pos list list * not commutative pos list
           and not abstractions. 
  *)
 fun sign_of_comm_thm thm = let 
-  val (Const("HOL.Trueprop", Type("fun", [Type("HOL.bool", []), Type("prop", [])]))) $
-        (((Const("HOL.eq", Type("fun", [_, Type("fun", [_, Type("HOL.bool", [])])]))) $
+  val (Const(@{const_name "HOL.Trueprop"}, Type("fun", [Type("HOL.bool", []), Type("prop", [])]))) $
+        (((Const(@{const_name "HOL.eq"}, Type("fun", [_, Type("fun", [_, Type("HOL.bool", [])])]))) $
           lhs) $ rhs) = thm; 
   val (f_lhs, var_lhs) = Term.strip_comb lhs;
   val (f_rhs, var_rhs) = Term.strip_comb rhs;
@@ -258,10 +252,8 @@ fun strip_associative func var = if (Term.head_of var =func)
                                       then snd(Term.strip_comb var) else [var];
 
 fun sign_of_ass_thm thm = 
-  let 
-  val (Const("HOL.Trueprop", Type("fun", [Type("HOL.bool", []), Type("prop", [])]))) $
-        (((Const("HOL.eq", Type("fun", [_, Type("fun", [_, Type("HOL.bool", [])])]))) $
-          lhs) $ rhs) = thm;
+let 
+  val (Const(@{const_name "HOL.Trueprop"}, _)) $ (((Const(@{const_name "HOL.eq"}, )) $ lhs) $ rhs) = thm;
   val (f_lhs, var_lhs) = Term.strip_comb lhs;
   val (f_rhs, var_rhs) = Term.strip_comb rhs;
   val strip_lhs = List.concat (map (strip_associative f_lhs) var_lhs);
@@ -275,37 +267,6 @@ in
     then  f_lhs 
   else raise fun_not_associative
 end;
-
-
-
-(*
-fun sign_of_comm_thm thm = let 
-  val (Const("HOL.Trueprop", Type("fun", [Type("HOL.bool", []), Type("prop", [])]))) $
-          eq $ lhs $ rhs = thm; 
-  val (f_lhs, var_lhs) = Term.strip_comb lhs;
-  val (f_rhs, var_rhs) = Term.strip_comb rhs;
-  fun insert_var_in_list _ ([],[]) comm_vars_list =   comm_vars_list
-    | insert_var_in_list _ ([],_) comm_vars_list = raise fun_not_commutative
-    | insert_var_in_list _ (_,[]) comm_vars_list = raise fun_not_commutative
-    | insert_var_in_list initial_pos (v1::vars1, v2::vars2) comm_vars_list = 
-         if v1 =  v2 then 
-            insert_var_in_list (initial_pos + 1) (vars1,vars2) comm_vars_list
-         else 
-           let 
-             val comm_vars_list' = insert_bij initial_pos (v1,v2) comm_vars_list;
-           in insert_var_in_list  (initial_pos + 1) (vars1,vars2) comm_vars_list' end
-                
-  val comm_vars_list =  insert_var_in_list 0 (var_lhs,var_rhs) [];
-                                          
-  val comm_vars_list' = map (fn ((a1,a2),b) => if (a1=a2) then raise fun_not_commutative
-                            else b)  comm_vars_list
-
-in 
-    if (f_rhs=f_lhs) then 
-      (f_lhs, comm_vars_list') 
-    else raise fun_not_commutative
-    end;
-*)
 
 (* takes a table and a commutative function signature and adds it to the table*)
 

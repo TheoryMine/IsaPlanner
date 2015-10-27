@@ -108,25 +108,4 @@ map  (Commfun.CMTTab.print (Commfun.pretty context)) poo6;
 *}
 
 
-ML {* 
-(*val _ = TermDbg.writeterm t;
-
-val (Const("Trueprop", Type("fun", [Type("bool", []), Type("prop", [])]))) $
- (((Const("op =", Type("fun", [_, Type("fun", [_, Type("bool", [])])]))) $
- lhs) $ rhs) = t; *)
-
-
-*}
-
-ML {* 
-val (Const("Trueprop", Type("fun", [Type("bool", []), Type("prop", [])]))) $ ((eq $ lhs) $ rhs) = t;
-
-
-*}
-
-ML {* 
-
-*}
-
-
 end;

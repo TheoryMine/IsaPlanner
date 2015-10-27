@@ -52,8 +52,8 @@ struct
   (* Commutes the arguments if this is an equation *)
   fun swap_eq z =
       case Zipper.trm z of
-        (Const("HOL.eq",ty)$arg1$arg2) =>
-         Const("HOL.eq",ty)$arg2$arg1
+        (Const(@{const_name "HOL.eq"},ty)$arg1$arg2) =>
+         Const(@{const_name "HOL.eq"},ty)$arg2$arg1
       | t => t; 
   
 

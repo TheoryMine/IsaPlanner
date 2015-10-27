@@ -48,7 +48,7 @@ fun find_matches (n,ty) ppl rule_strms goal_subtrm =
     end;
 
 
-fun try_dest_Trueprop (Const("HOL.Trueprop", _) $ T) = T
+fun try_dest_Trueprop (Const(@{const_name "HOL.Trueprop"}, _) $ T) = T
     | try_dest_Trueprop T = T;
 
 (* Function for searching zipper which doesn't include terms involving Bounds if we're under a lambda

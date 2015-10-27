@@ -98,7 +98,7 @@ structure I =
 val default_codegen_params = SOME (Type("Int.int", []));
 fun quickcheck_prep_term ctxt (default_type, tvinsts) trm = 
     let
-      fun strip (Const ("all", _) $ Abs (_, _, t)) = strip t
+      fun strip (Const (@{const_name "Pure.all"}, _) $ Abs (_, _, t)) = strip t
         | strip t = t;
           
       val frees = map Free (Term.rename_wrt_term trm (Logic.strip_params trm))

@@ -247,11 +247,11 @@ fun mk_term_of_wf T u t =
       let 
         val Ts = (rev (TrmCtxt.ty_ctxt u)) @ T
         val ty = Term.type_of1 (Ts, t)
-        val t2 = Const("embedding_notation.wave_hole",ty --> ty) $ t
+        val t2 = Const(@{const_name "embedding_notation.wave_hole"},ty --> ty) $ t
         val t3 = TrmCtxt.apply u t2
         val ty2 = Term.type_of1 (T, t3)
       in
-        Const("embedding_notation.wave_front",ty2 --> ty2) $ t3
+        Const(@{const_name "embedding_notation.wave_front"},ty2 --> ty2) $ t3
       end;
 
 
@@ -281,17 +281,17 @@ fun bnds_and_termf_of_wf T u =
          (fn t => 
              let 
                val ty = Term.type_of1 (Ts, t)
-               val t2 = Const("embedding_notation.wave_hole",ty --> ty) $ t
+               val t2 = Const(@{const_name "embedding_notation.wave_hole"},ty --> ty) $ t
                val t3 = TrmCtxt.apply u t2
                val ty3 = Term.type_of1 (T, t3)
              in
-               Const("embedding_notation.wave_front",ty --> ty3) $ t3
+               Const(@{const_name "embedding_notation.wave_front"},ty --> ty3) $ t3
              end)
         )
       end; 
     
 fun mk_sink_of (ix, t, ty) = 
-    Const("embedding_notation.sink" (*^ s ^ ""*),ty --> ty) $ t;
+    Const(@{const_name "embedding_notation.sink"},ty --> ty) $ t;
  
 (* This can be used to change get a nice readable term-representation 
    of the embedding, with wave fronts, wave holes and sinks all annotated. *)

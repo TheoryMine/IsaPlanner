@@ -22,14 +22,14 @@ val impI = @{thm  "impI"}
 val if_P = @{thm  "if_P"}
 val if_not_P = @{thm  "if_not_P"}
 
-fun negate t = (Const("HOL.Not",HOLogic.boolT-->HOLogic.boolT)$t);
+fun negate t = (Const(@{const_name "HOL.Not"},HOLogic.boolT-->HOLogic.boolT)$t);
 
 fun is_if t =
     let 
       val z= Zipper.mktop t
       fun find_if z = 
           case Zipper.trm z
-           of (Const("HOL.If",_)) => true
+           of (Const(@{const_name "HOL.If"},_)) => true
             | _ => false
 (*FIXME: only need to find one if *)
       val ifs = Seq.filter find_if (ZipperSearch.leaves_lr z)

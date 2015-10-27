@@ -31,7 +31,7 @@ fun is_if t =
             | _ => [];*)
 
       val ifs = Seq.filter (fn z => case (Zipper.trm z) 
-                                               of (Const("HOL.If",_)) => true
+                                               of (Const(@{const_name "HOL.If"},_)) => true
                                                 | _ => false) 
                                    (ZipperSearch.leaves_lr (Zipper.mktop t))
     in
