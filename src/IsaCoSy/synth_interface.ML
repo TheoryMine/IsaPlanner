@@ -130,15 +130,15 @@ Add theorems as wrules and make new constraints. *)
         val just_lemmas = map snd lems_w_prfs
 
         (* Generate constraints from valid rewrites only *)
-        val (rw_thms,non_rw_thms) =  SynthLib.map_partition 
-                                       (fn (prf,thm) => 
-                                           case (OrderTerms.mk_valid_rw_def_prec old_thy_constrs thm) of
-                                             NONE => NONE
-                                           (*Slightly dogdy, prf could now be for symmetric version, 
-                                            but it's just a string description anyway. *)
-                                           | SOME thm' => SOME (prf,thm')
-                                       ) 
-                                      (thms_w_prfs@lems_w_prfs)
+        val (rw_thms,non_rw_thms) =  
+          SynthLib.map_partition 
+            (fn (prf,thm) => 
+                case (OrderTerms.mk_valid_rw_def_prec old_thy_constrs thm) of
+                  NONE => NONE
+                (*Slightly dogdy, prf could now be for symmetric version, 
+                 but it's just a string description anyway. *)
+                | SOME thm' => SOME (prf,thm')) 
+            (thms_w_prfs@lems_w_prfs)
        (* Check if there are any commutativity theorems among the non-rw rules *)
         val commutativity = map_filter (is_commutativity o snd) non_rw_thms                          
         val nw_constr_params =  constr_params

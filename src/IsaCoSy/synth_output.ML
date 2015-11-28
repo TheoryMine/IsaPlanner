@@ -148,13 +148,18 @@ struct
       end;
 
   (* Write a term to an xml file, with path given by dir, and the index specifying the file name
-     (assuing the term is one in a long list produced by IsaCoSy).*)
+     (assuming the term is one in a long list produced by IsaCoSy).*)
   fun xmlify_term dir (ind,trm) = 
       let
         val elemname = "";
-        val xml_tree = XML_Syntax.xml_of_term trm
+        val xml_tree = Term_XML.Encode.term trm
       in 
-        XML_Syntax.write_to_file (Path.make [dir, (Int.toString ind)^".xml"]) elemname xml_tree 
+        File.write (Path.make [dir, (Int.toString ind)^".xml"]) 
+          ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" ^
+          XML.string_of (XML.Elem ((elemname,
+              [("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance"),
+               ("xsi:noNamespaceSchemaLocation", "isabelle.xsd")]),
+            xml_tree)))
       end;
 
  (* Export theorems to xml. Each theorem is in a separate xml file *)

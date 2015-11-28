@@ -253,7 +253,8 @@ fun strip_associative func var = if (Term.head_of var =func)
 
 fun sign_of_ass_thm thm = 
 let 
-  val (Const(@{const_name "HOL.Trueprop"}, _)) $ (((Const(@{const_name "HOL.eq"}, )) $ lhs) $ rhs) = thm;
+  val (Const(@{const_name "HOL.Trueprop"}, _)) $ 
+        (((Const(@{const_name "HOL.eq"}, _)) $ lhs) $ rhs) = thm;
   val (f_lhs, var_lhs) = Term.strip_comb lhs;
   val (f_rhs, var_rhs) = Term.strip_comb rhs;
   val strip_lhs = List.concat (map (strip_associative f_lhs) var_lhs);

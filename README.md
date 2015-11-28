@@ -32,17 +32,18 @@ Simply open the file `quicktest.thy` in Isabelle 2015.
 To use IsaPlanner, you should build the heap from IsaPlanner dir by running the command:
 
 ```
-isabelle make
+isabelle build -d . -b HOL-IsaPlannerSession
 ```
 
 This will build and ML heap (also sometimes referred to as an Isabelle Logic)
-called "HOL_IsaP" containing Isabelle/HOL with IsaPlanner tools loaded in a
+called "HOL-IsaPlannerSession" containing Isabelle/HOL with IsaPlanner tools loaded in a
 theory "IsaP". Now you can make a new theory that imports "IsaP" and in that
 theory you can use IsaPlanner.
 
 
 ## Developing new techniques
 
-You'll be doing ML programming in Isabelle, so make sure to have the [Isabelle CookBook](http://www.dcs.kcl.ac.uk/staff/urbanc/Cookbook/) handy.
+You'll be doing ML programming in Isabelle, so make sure to have the 
+[Isabelle CookBook](http://www.dcs.kcl.ac.uk/staff/urbanc/Cookbook/) handy.
 
 TODO: complete this section. :) 

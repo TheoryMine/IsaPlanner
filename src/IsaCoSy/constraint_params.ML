@@ -115,15 +115,15 @@ fun arg_order ((_,t1), (_,t2)) =
       let 
         val (dtyp_consts, fun_consts) = 
             List.partition (Refute.is_IDT_constructor (Proof_Context.theory_of ctxt))
-                  synth_consts   
+                  synth_consts
       in 
         (Library.sort arg_order dtyp_consts) @ 
         (Library.sort arg_order fun_consts)
       end;
 
- (* This function returns a list sorted by LPO precedence, with datatype
+  (* This function returns a list sorted by LPO precedence, with datatype
   constructors are assumed smaller than function symbols. *)
-  fun sort_def_order ctxt consts (*constants as (string * typ) *) =
+  fun sort_def_order ctxt consts (* constants as (string * typ) *) =
       let 
        val (datatype_consts, funconsts) = 
             List.partition (Refute.is_IDT_constructor (Proof_Context.theory_of ctxt)) consts;
@@ -435,12 +435,12 @@ fun arg_order ((_,t1), (_,t2)) =
         (maps (fn (_,(nm,typargs, constructors)) => 
                 let 
                   val my_typargs =  
-                      map (varify_typ o Datatype_Aux.typ_of_dtyp descr) typargs
+                      map (varify_typ o Old_Datatype_Aux.typ_of_dtyp descr) typargs
                   val resulttyp = Type(nm, my_typargs)
                 in map (fn (constr_nm, dtyps) => 
                               let 
                                 val argtyps = map (varify_typ o 
-                                                   Datatype_Aux.typ_of_dtyp descr) dtyps
+                                                   Old_Datatype_Aux.typ_of_dtyp descr) dtyps
                               in (constr_nm, argtyps ---> resulttyp) end)    
                           constructors
                 end)
@@ -449,7 +449,7 @@ fun arg_order ((_,t1), (_,t2)) =
 
  exception not_a_datatype_exp of string;
   fun get_dinfo_in_thy thy datatype_name = 
-      (case (Datatype_Data.get_info thy datatype_name) 
+      (case (BNF_LFP_Compat.get_info thy [] datatype_name) 
        of NONE => raise not_a_datatype_exp datatype_name
         | SOME dinfo => dinfo);
   fun get_dinfo_in_ctxt ctxt datatype_name = 

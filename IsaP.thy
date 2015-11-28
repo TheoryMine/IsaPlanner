@@ -2,11 +2,11 @@
 theory IsaP 
 imports
 "src/build/HOL_IsaP"
-(* "src/build/IsaCoSy" *)
-
+"src/build/IsaCoSy"
 begin
 
 ML {*
+
 *}
 
 end
