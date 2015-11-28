@@ -2038,7 +2038,7 @@ val strm = synthesise_upto_given_term
 (* an invariant that checks synthesised terms are correct *)
 (* given theory and initial strm id function if good, else raises exception *)
 fun certify_strm ctxt strm = 
-    let val _ = Thm.cterm_of (Proof_Context.theory_of ctxt) (get_term strm) 
+    let val _ = Thm.cterm_of ctxt (get_term strm) 
     in strm end;
 
 (* the core synthesis setup function *)

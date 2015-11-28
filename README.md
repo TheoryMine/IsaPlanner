@@ -26,7 +26,6 @@ Note that IsaCoSy has not yet been ported. This work is ongoing.
 
 Simply open the file `quicktest.thy` in Isabelle 2015.
 
-
 ## Setup IsaPlanner Heap
 
 To use IsaPlanner, you should build the heap from IsaPlanner dir by running the command:
@@ -35,11 +34,18 @@ To use IsaPlanner, you should build the heap from IsaPlanner dir by running the 
 isabelle build -d . -b HOL-IsaPlannerSession
 ```
 
-This will build and ML heap (also sometimes referred to as an Isabelle Logic)
+This will build and ML heap (also sometimes referred to as an Isabelle Session)
 called "HOL-IsaPlannerSession" containing Isabelle/HOL with IsaPlanner tools loaded in a
 theory "IsaP". Now you can make a new theory that imports "IsaP" and in that
-theory you can use IsaPlanner.
+theory you can use IsaPlanner and IsaCoSy.
 
+For example, start Isabelle with the Isabelle session 'HOL-IsaPlannerSession' using this command:
+```
+isabelle jedit -l HOL-IsaPlannerSession -d ISAPLANNER_DIRECTORY
+```
+
+where `ISAPLANNER_DIRECTORY` is dierctory containing IsaPlanner (optionally relative to the current 
+directory).
 
 ## Developing new techniques
 

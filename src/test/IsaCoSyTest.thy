@@ -1,4 +1,4 @@
-header{* Running, testing and debugging IsaCoSy *}
+(* Running, testing and debugging IsaCoSy *)
 theory IsaCoSyTest
 imports "IsaP"
 begin

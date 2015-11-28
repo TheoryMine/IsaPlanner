@@ -1,42 +1,26 @@
-theory IsaCoSy2
-imports HOL_IsaP 
-
-uses 
-
-("synth_output.ML")
-("synth_prf_tools.ML") (* Update this *)
-("synth_lib.ML")
-("constraint_param_schemes.ML")
-("constraint_params.ML")
-("synthNames.ML")
-("thyConstr.ML")
-("constInfo.ML")
-("theoryConstraints.ML")
-("synthConstr.ML")
-("sterm.ML")
-("term_synhesis.ML")
-("synth_interface.ML")
-("order_terms.ML")
+theory IsaCoSy_test
+imports 
+  "~~/src/HOL/Library/Refute"
+  "../build/HOL_IsaP" 
 begin
-ML{*
-Trm.pretty
-;
-*}
 
-use "synth_lib.ML"
-use "synth_prf_tools.ML"
-use "synth_output.ML"
-use "constraint_param_schemes.ML"
-use "constraint_params.ML"
-use "synthNames.ML"
-use "thyConstr.ML"
-use "constInfo.ML"
-use "theoryConstraints.ML"
-use "synthConstr.ML"
-use "sterm.ML"
-use "term_synhesis.ML"
-use "order_terms.ML"
-use "synth_interface.ML"
+(* This is from IsaCoSy v1; v2 of IsaCoSy is in the synthesis subdirectory. *)
+
+ML_file "synth_output.ML"
+ML_file "synth_prf_tools.ML" (* Update this *)
+ML_file "synth_lib.ML"
+ML_file "constraint_param_schemes.ML"
+ML_file "constraint_params.ML"
+ML_file "synthNames.ML"
+ML_file "thyConstr.ML"
+ML_file "constInfo.ML"
+ML_file "theoryConstraints.ML"
+ML_file "synthConstr.ML"
+ML_file "sterm.ML"
+ML_file "term_synhesis.ML"
+ML_file "order_terms.ML"
+ML_file "synth_interface.ML"
+
 
 datatype mynat = ZZero | SSuc mynat
 
@@ -92,12 +76,7 @@ val (nw_cparams, nw_ctxt) = SynthInterface.thm_synth
 
 ML{*
  
-
 SynthInterface.print_thms (nw_cparams, nw_ctxt);
-
-*}
-ML{*
-
 
 *}
 

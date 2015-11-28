@@ -1,4 +1,4 @@
-header {* Some handy theorems used by critics*}
+(* Some handy theorems used by critics *)
 theory IsaPHOLUtils
 imports HOL 
 begin

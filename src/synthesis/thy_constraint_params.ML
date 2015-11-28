@@ -23,18 +23,16 @@ local open ConstraintParams; in (* Constant and constraint Information *)
       map termrw_of_thm
           ((Proof_Context.get_thms ctxt (n^".simps")) handle ERROR s => []);
   
-  (* Context.theory -> (String.string * Term.typ) list  *)      
-  (* Get the constants of a given theory *)
-  (* FIXME: proper ctxt *)
+  (* Theory.context -> (String.string * Term.typ) list  *)      
+  (* Get the constants of a given context *)
   fun consts_of_ctxt ctxt = 
       let
         val thy = Proof_Context.theory_of ctxt
         val consts = Sign.consts_of thy
-        val constlist = Name_Space.dest_table ctxt (#constants(Consts.dest consts))
-        val thynm = Context.theory_name thy(*NameSpace.path_of (Sign.naming_of thy)*)
+        val constlist = (#constants (Consts.dest consts))
+        val thynm = Context.theory_name thy (* Name_Space.path_of (Sign.naming_of thy) *)
       in
-        (* Doesnt work for consteants with names that are inherited 
-           from elsewhere. *)
+        (* Does not work for constants with names that are inherited from elsewhere. *)
         constlist 
           |> (map_filter (fn (constnm, (ty,_)) => 
                            if (String.isPrefix thynm constnm) then SOME (constnm, ty)
@@ -49,7 +47,7 @@ local open ConstraintParams; in (* Constant and constraint Information *)
   fun datatypes_of_ctxt ctxt = 
       let
         val thy = Proof_Context.theory_of ctxt
-        val datatype_infotab = Symtab.dest (Datatype.get_all thy)
+        val datatype_infotab = Symtab.dest (BNF_LFP_Compat.get_all thy [])
         val thynm = Context.theory_name thy(*NameSpace.path_of (Sign.naming_of thy)*)
       in
         filter (fn (datatypnm,_) => String.isPrefix thynm datatypnm) 
@@ -60,7 +58,7 @@ local open ConstraintParams; in (* Constant and constraint Information *)
   (* get datatype info from theory *)
   exception not_a_datatype_exp of string;
   fun get_dinfo_in_thy thy datatype_name = 
-      (case (Symtab.lookup (Datatype.get_all thy) datatype_name) 
+      (case (Symtab.lookup (BNF_LFP_Compat.get_all thy []) datatype_name) 
        of NONE => raise not_a_datatype_exp datatype_name
         | SOME dinfo => dinfo);
   fun get_dinfo_in_ctxt ctxt datatype_name = 
@@ -103,12 +101,12 @@ local open ConstraintParams; in (* Constant and constraint Information *)
         (maps (fn (_,(nm,typargs, constructors)) => 
                 let 
                   val my_typargs =  
-                      map (varify_typ o Datatype_Aux.typ_of_dtyp descr) typargs
+                      map (varify_typ o Old_Datatype_Aux.typ_of_dtyp descr) typargs
                   val resulttyp = Type(nm, my_typargs)
                 in map (fn (constr_nm, dtyps) => 
                               let 
                                 val argtyps = map (varify_typ o 
-                                                   Datatype_Aux.typ_of_dtyp descr) dtyps
+                                                   Old_Datatype_Aux.typ_of_dtyp descr) dtyps
                               in (constr_nm, argtyps ---> resulttyp) end)    
                           constructors
                 end)
