@@ -2,9 +2,6 @@
 theory IsaCoSyTest
 imports "IsaP"
 begin
-ML{*
-
-*}
 
 datatype mynat = ZZero | SSuc mynat
 
@@ -62,28 +59,35 @@ val (nw_cparams, nw_ctxt) = SynthInterface.thm_synth
   SynthInterface.quickcheck 
   SynthInterface.try_reprove_config 
   SynthInterface.var_allowed_in_lhs
-  {max_size = 11,min_size = 3, max_vars = 3, max_nesting= SOME 2} 
-  (Constant.mk "HOL.eq") (cparams0,@{context}); 
+  {max_size = 11, min_size = 3, max_vars = 3, max_nesting = SOME 2} 
+  (Constant.mk @{const_name "HOL.eq"}) (cparams0, @{context}); 
 val end_time = Timer.checkCPUTimer timer;
-
-
-map (Trm.print nw_ctxt) (SynthOutput.get_all (SynthOutput.Ctxt.get nw_ctxt));
-
 *}
+
+ML {*
+map (Trm.print nw_ctxt) (SynthOutput.get_all (SynthOutput.Ctxt.get nw_ctxt));
+*}
+
 
 ML{*
+let 
+  val num_conjs = DB_SynthOutput.get_tot_synthterms (DB_SynthOutput.Ctxt.get nw_ctxt);
+  val thms = SynthOutput.get_thms (SynthOutput.Ctxt.get nw_ctxt);
+  val open_conjs = SynthOutput.get_conjs (SynthOutput.Ctxt.get nw_ctxt);
+in
+  writeln ("Total number of examined conjectures: " ^ (Int.toString num_conjs));
+  writeln "Theorem Proved:";
+  map (fn (_,thm) => Trm.print nw_ctxt (Thm.concl_of thm)) thms;
+  writeln "Open Conjectures:";
+  map (Trm.print nw_ctxt) open_conjs
+end
+*}
 
-val num_conjs = DB_SynthOutput.get_tot_synthterms (DB_SynthOutput.Ctxt.get nw_ctxt);
-writeln "Theorems:";
-val thms = SynthOutput.get_thms (SynthOutput.Ctxt.get nw_ctxt);
-map (fn (_,thm) => Trm.print nw_ctxt (Thm.concl_of thm)) thms;
-writeln "Open Conjectures:";
-val open_conjs = SynthOutput.get_conjs (SynthOutput.Ctxt.get nw_ctxt);
-map (Trm.print nw_ctxt) open_conjs;
-
-
+ML {* 
 
 *}
+(* 
+
 ML{*
 open InstEnv;
 val (s,i) = InstEnv.new_uninst_var (Var.mk "x", @{typ "mynat"}) (InstEnv.init nw_ctxt);
@@ -410,4 +414,6 @@ val (cs, thy) = ConstInfo.mk_const_infos_ac thy0;
 ML{* 
 Synthesis.synth_w_stats (3, 8) 2 thy cs;
 *}
-end;
+*)
+
+end
