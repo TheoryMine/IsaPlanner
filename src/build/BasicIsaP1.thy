@@ -1,7 +1,7 @@
 theory BasicIsaP1
-imports 
+imports
  HOL
- "~~/contrib/isaplib/isabelle/isaplib/isaplib"
+ "~~/contrib/isaplib/pure_isaplib"
 (*  "skel"  *)
 begin
 
@@ -25,7 +25,7 @@ ML_file "../libs/term/trm.ML" (* genericish terms *)
 ML_file "../libs/term/isa_trm.ML" (* Isabelle instantiation of generic-ish terms  *)
 ML_file "../libs/term/fterm.ML" (* Flattened Isabelle terms  *)
 ML_file "../libs/term/fzipper.ML" (* Zipper for Flattened Isabelle terms  *)
-(* "../gproof/prf/trm_rename.ML" *) (* renaming of terms *) 
+(* "../gproof/prf/trm_rename.ML" *) (* renaming of terms *)
 
 (* abstract notion of instantiation and variable dependencies *)
 ML_file "../libs/term/instenv.ML"

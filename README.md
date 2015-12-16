@@ -15,11 +15,9 @@ IsaPlanner. (briefly, run the command "isabelle make" and you are
 done)
 
 You want to be familiar with [Isabele](http://isabelle.in.tum.de/) before trying
-to use IsaPlanner. :) 
+to use IsaPlanner. :)
 
-This version of IsaPlanner is intended to work with Isabelle 2015. 
-
-Note that IsaCoSy has not yet been ported. This work is ongoing. 
+This version of IsaPlanner is intended to work with Isabelle 2015 and requires that you have a clone/download of the [Isabelle-2015 branch of isaplib](https://github.com/iislucas/isaplib/tree/Isabelle-2015) in your Isabelle contrib directory.
 
 
 ## Quickly playing with IsaPlanner
@@ -44,12 +42,12 @@ For example, start Isabelle with the Isabelle session 'HOL-IsaPlannerSession' us
 isabelle jedit -l HOL-IsaPlannerSession -d ISAPLANNER_DIRECTORY
 ```
 
-where `ISAPLANNER_DIRECTORY` is dierctory containing IsaPlanner (optionally relative to the current 
+where `ISAPLANNER_DIRECTORY` is dierctory containing IsaPlanner (optionally relative to the current
 directory).
 
 ## Developing new techniques
 
-You'll be doing ML programming in Isabelle, so make sure to have the 
+You'll be doing ML programming in Isabelle, so make sure to have the
 [Isabelle CookBook](http://www.dcs.kcl.ac.uk/staff/urbanc/Cookbook/) handy.
 
-TODO: complete this section. :) 
+TODO: complete this section. :)
