@@ -1,5 +1,5 @@
-theory quicktest 
-imports IsaP Main
+theory "shankar-challenge"
+imports "../IsaP" Main
 begin
 
 -- "Remove old syntax, we don't want to confuse ourselves with 
@@ -172,4 +172,4 @@ Proof:
 \end{verb}
 *}
 
-end;
+end
