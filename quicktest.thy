@@ -107,9 +107,8 @@ ML {* val SOME(myrst,more) = ind_and_simp ["a + 0 = (a::N)"]; *}
 ML {* val SOME(myrst,more) = ind_and_simp ["a + b = b + (a::N)"]; *}
 
 (*The below two seem to be non termninating due to diverging or the same lemmas being calculated over and over. *)
-(* 
+
 ML {* val myrst = ind_and_simp ["a * b = ((b::N) * a)"]; *} 
 ML {* val myrst = ind_and_simp ["a ^ (b + (c :: N)) = a ^ b * a ^ c"]; *}
-*)
 
 end

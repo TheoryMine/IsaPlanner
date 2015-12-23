@@ -42,6 +42,7 @@ ML_file   "../build/isar_attr.ML"
 ML_file   "../rtechn/split/split_rtechn.ML"
 
   (* Lemma conjecturing *)
+ML_file   "../rtechn/conj/conj_subsume.ML"
 ML_file   "../rtechn/conj/conj_stack_cinfo.ML"
 ML_file   "../rtechn/conj/conjecturedb_lib.ML"
 ML_file   "../rtechn/conj/conjdb_cinfo.ML"
@@ -244,7 +245,7 @@ setup MidOutCInfo_dsum.MidOutI.init_in_thy
 
 -- "setup other inductive proof technique tools"
 
-setup ConjStackCInfo.I.init_in_thy
+(* setup ConjStackCInfo.Ctxt.setup *)
 setup CounterExCInfo.I.init_in_thy
 
 end

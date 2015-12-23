@@ -1,10 +1,10 @@
-(* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *) 
+(* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *)
 (*  Title:      rtechn/basic/rtechn_comb.ML
     Author:     Lucas Dixon, University of Edinburgh
                 lucas.dixon@ed.ac.uk
     created:    30 Jun 2005
 *)
-(* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *) 
+(* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *)
 (*  DESCRIPTION:
 
     Basic technique combinators with hierarchical traces
@@ -13,13 +13,13 @@
     simply by not changing the continuation - very cunning.
 
 *)
-(* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *) 
+(* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *)
 signature RTECHN_COMB =
 sig
   val allfail_critic : RTechn.T (* critic *)
                        -> RTechn.T (* techn *)
                        -> RTechn.T
- val try_then : RTechn.T (* try this *)
+  val try_then : RTechn.T (* try this *)
                        -> RTechn.T (* do this if all branches fail = critic *)
                        -> RTechn.T
   val branchfail_critic : RTechn.T -> RTechn.T -> RTechn.T
@@ -34,7 +34,7 @@ sig
   val orr : RTechn.T * RTechn.T -> RTechn.T
   val orr_list : RTechn.T list -> RTechn.T
   val refine : RstName.T -> RTechn.T -> RTechn.T
-  val refine' : RstName.T -> (RState.T -> RState.T) 
+  val refine' : RstName.T -> (RState.T -> RState.T)
                 -> RTechn.T -> RTechn.T
   val repeat : RTechn.T -> RTechn.T
   val repeat_then : RTechn.T -> RTechn.T -> RTechn.T
@@ -46,7 +46,7 @@ sig
   val fthen : (RState.T -> RState.T) * RTechn.T -> RTechn.T
   val fsthen : (RState.T -> RState.T Seq.seq) * RTechn.T -> RTechn.T
   val thenf : RTechn.T * (RState.T -> RState.T) -> RTechn.T
-  val thenfs : RTechn.T * (RState.T -> RState.T Seq.seq) 
+  val thenfs : RTechn.T * (RState.T -> RState.T Seq.seq)
                -> (RState.T -> RState.T Seq.seq)
   val thenr : RTechn.T * RTechn.T -> RTechn.T
   val try1_orelse : RTechn.T * RTechn.T -> RTechn.T
@@ -88,13 +88,13 @@ val continue_with = RState.set_rtechn o SOME o HTraceCInfo.thenify;
 
 (* then and or for techniques *)
 fun op thenr (r1, r2) = r1 thenf (continue_with r2);
-fun op orr (inr1, inr2) = 
+fun op orr (inr1, inr2) =
     let fun auxby (r1, r2) st = HTraceCInfo.orify (inr1, st) (inr2, st)
     in auxby (inr1, inr2)  end;
 
-(* given a rst set continuation to do whatever it was going to, then 
+(* given a rst set continuation to do whatever it was going to, then
    start the given technique. *)
-fun then_continue_with r rst = 
+fun then_continue_with r rst =
     (case RState.get_rtechn rst of
        NONE => RState.set_rtechn (SOME (HTraceCInfo.thenify r)) rst
      | SOME c => RState.set_rtechn (SOME (c thenr r)) rst);
@@ -113,24 +113,24 @@ val givename = DescripCInfo.set_techn;
 (* a named technique that does nothing for one step *)
 fun dummy n = givename n RTechn.dummy;
 fun dummy_str s = dummy (RstName.str s);
-fun end_rst n rst = 
+fun end_rst n rst =
     rst |> DescripCInfo.set_rst n
         |> RState.set_rtechn NONE;
 
 (* introduces a dummy step (does nothing) that refines the hierarchical trace *)
-fun refine n r = 
+fun refine n r =
     HTraceCInfo.refinify ((dummy n) thenr r)
 
 (* introduces a step that applies f and refines the hierarchical trace *)
-fun refine' n f r = 
+fun refine' n f r =
     HTraceCInfo.refinify (((dummy n) thenf f) thenr r);
 
 (* technique of a rst function *)
 fun ofstep n = givename n o RTechn.ofstep;
 
 (* make a technique suitable for initial proof planning *)
-(*fun init rst = 
-    let 
+(*fun init rst =
+    let
       val pp = RState.get_pplan rst
       val pst = PPlan.top_pst_of pp
       val ctxt = Proof.context_of pst
@@ -141,32 +141,32 @@ fun ofstep n = givename n o RTechn.ofstep;
 *)
 (* try the first technique, if it gives back a state, then behave as
    if we are a normal thenr r2, else we behave simply as r2. *)
-fun op try1_then (r, r2) rst = 
+fun op try1_then (r, r2) rst =
     (case Seq.pull (r rst) of
        NONE => r2 rst
-     | SOME (st, sts) => 
+     | SOME (st, sts) =>
        Seq.map (then_continue_with r2) (Seq.cons st sts));
 
-(* try first technqiue, if it does not imidiately fail continue as normal. 
+(* try first technqiue, if it does not imidiately fail continue as normal.
    If it does imidiately fail, then act as r2. *)
-fun op try1_orelse (r, r2) rst = 
+fun op try1_orelse (r, r2) rst =
     (case Seq.pull (r rst) of
        NONE => r2 rst
      | SOME (st, sts) => Seq.cons st sts);
 
-(* try first technqiue, if it does not imidiately fail continue as normal. 
+(* try first technqiue, if it does not imidiately fail continue as normal.
    If it does imidiately fail, try the next thing in the list *)
 fun try1_orelse_list [] rst = Seq.empty
-  | try1_orelse_list (r::rs) rst = 
+  | try1_orelse_list (r::rs) rst =
     (case Seq.pull (r rst) of
        NONE => try1_orelse_list rs rst
      | SOME (st, sts) => Seq.cons st sts);
 
-(* apply critic technique when every branch has failed, ie to 
+(* apply critic technique when every branch has failed, ie to
    last failed branch *)
 (* implicit rst *)
-fun allfail_critic critic r1 = 
-    SubSpaceRTechn.subspace 
+fun allfail_critic critic r1 =
+    SubSpaceRTechn.subspace
     {sref = Unsynchronized.ref (SubSpace.init()),
      techn = r1,
      rstf = HTraceCInfo.thenify critic};
@@ -174,7 +174,7 @@ fun allfail_critic critic r1 =
 fun try_then r1 r2 = allfail_critic r2 r1;
 
 (* apply critic technique to every failed branch of the search space *)
-fun branchfail_critic r c = 
+fun branchfail_critic r c =
     RTechn.failedbranch_critic r (HTraceCInfo.thenify c);
 
 (* repeat technique r, n times *)
@@ -189,13 +189,13 @@ fun repeat r rst = (r thenr (repeat r)) rst;
 fun repeat_then r r2 = branchfail_critic (repeat r) r2;
 
 (* repeat until condition is true *)
-fun repeat_untilf c r rst = 
+fun repeat_untilf c r rst =
     if c rst then rst
     else continue_with (r thenf (repeat_untilf c r)) rst;
 fun repeat_until c r = r thenf (repeat_untilf c r);
 
 (* converse of above: repeat while condition is true *)
-fun repeat_whilef c r rst = 
+fun repeat_whilef c r rst =
     if c rst then continue_with (r thenf (repeat_whilef c r)) rst
     else rst
 fun repeat_while c r = r thenf (repeat_whilef c r);
@@ -207,12 +207,12 @@ val search = RTechn.search;
 
 (* r must solve all goals of rst completely, ie. none of the
 resulting reasoning states should have any new goalnames. *)
-fun solve_or_fail r = 
+fun solve_or_fail r =
     r thenf (fn rst => if null (RState.get_goalnames rst)
                        then rst else RState.set_rtechn (SOME fail) rst);
 
 (* same as above above, but avoids introducing failed state into trace *)
-fun solve_or_nothing r = 
+fun solve_or_nothing r =
     r thenfs (fn rst => if null (RState.get_goalnames rst)
                         then Seq.single rst else Seq.empty);
 
