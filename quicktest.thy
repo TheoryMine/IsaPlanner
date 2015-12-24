@@ -1,4 +1,4 @@
-theory quicktest 
+theory quicktest
 imports IsaP
 begin
 
@@ -32,13 +32,13 @@ ML {* WRulesGCtxt.print @{context}; *}
 fun minus :: "N => N => N"
 where
   minus_0    :  "(minus 0 y) = 0"
-| minus_suc  :  "(minus (suc x) y) = 
+| minus_suc  :  "(minus (suc x) y) =
   (case y of (0) => x| (suc y2) => minus x y)"
 declare minus.simps[wrule]
 
 -- {* Define multiplication *}
 fun mult :: "N => N => N" (infixl "*" 75)
-where 
+where
   mult_0    :  "(0 * y) = 0"
 | mult_suc  :  "(suc x) * y = y + (x * y)"
 declare mult.simps[wrule]
@@ -60,7 +60,7 @@ ML {* val thry = @{theory}; *}
 -- "ML function to automatically prove goals in Peano arithematic using
     with Rippling and Lemma Calculation "
 ML {*
-fun a_rippling goals = 
+fun a_rippling goals =
   PPInterface.init_rst_of_strings @{context} goals
    |> RState.set_rtechn (SOME (RTechnEnv.map_then RippleLemCalc.induct_ripple_lemcalc))
    |> GSearch.depth_fs (fn rst => is_none (RState.get_rtechn rst)) RState.unfold
@@ -69,7 +69,8 @@ fun a_rippling goals =
 
 -- "Things that can be automatically proved."
 
-ML {* val SOME(myrst,morersts) = a_rippling ["a + b = b + (a::N)"]; *}
+ML {* val SOME(myrst,morersts) = a_rippling ["a + b = b + (a::N)"];
+      val final_thm = RstPP.result_thm rst g; *}
 ML {* val SOME(myrst,morersts) = a_rippling ["a + 0 = (a::N)"]; *}
 ML {* val SOME(myrst,morersts) = a_rippling ["suc (n + p) = n + suc p"]; *}
 ML {* val SOME(myrst,morersts) = a_rippling ["a ^ (b + (c :: N)) = a ^ b * a ^ c"]; *}
@@ -82,12 +83,12 @@ ML {* val SOME(myrst,morersts) = a_rippling ["a ^ (b + (c :: N)) = a ^ b * a ^ c
 -- "Example of doing a proof automatically"
 ML {* val SOME(myrst,morersts) = a_rippling ["a + b = b + (a::N)"]; *}
 
--- "An example that the technique fails for. This is due to failing to 
+-- "An example that the technique fails for. This is due to failing to
     find the needed generalisation"
 ML {* val NONE = a_rippling ["a ^ (b ^ (c :: N)) = a ^ (b * c)"]; *}
 ML {* val NONE = a_rippling ["x + suc x = suc(x + x)"]; *}
 
--- "Note: for debugging, it is very useful to trace exceptions... Note: turn on debugging 
+-- "Note: for debugging, it is very useful to trace exceptions... Note: turn on debugging
     in Isabelle settings menu."
 (* PolyML.exception_trace (fn () =>  CODE_GOES_HERE  ); *)
 
@@ -95,7 +96,7 @@ ML {* val NONE = a_rippling ["x + suc x = suc(x + x)"]; *}
 section {* Examples using Simplification and Lemma Calculation *}
 
 -- "Use the technique described in the CADE'03 IsaPlanner paper. "
-ML {* 
+ML {*
 fun ind_and_simp goals =
   PPInterface.init_rst_of_strings @{context} goals
    |> RState.set_rtechn (SOME (RTechnEnv.map_then InductAndSimp.induct_and_simp))
@@ -108,7 +109,7 @@ ML {* val SOME(myrst,more) = ind_and_simp ["a + b = b + (a::N)"]; *}
 
 (*The below two seem to be non termninating due to diverging or the same lemmas being calculated over and over. *)
 
-ML {* val myrst = ind_and_simp ["a * b = ((b::N) * a)"]; *} 
+ML {* val myrst = ind_and_simp ["a * b = ((b::N) * a)"]; *}
 ML {* val myrst = ind_and_simp ["a ^ (b + (c :: N)) = a ^ b * a ^ c"]; *}
 
 end
