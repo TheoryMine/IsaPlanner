@@ -54,9 +54,35 @@ using this command:
 isabelle jedit -l HOL-IsaPlannerSession -d $ISAPLANNER_DIRECTORY
 ```
 
+
+## Running tests
+
+```
+isabelle build -d $ISAPLANNER_DIRECTORY -b IsaPlanner-Test
+```
+
+
 ## Developing new techniques
 
 You'll be doing ML programming in Isabelle, so make sure to have the
 [Isabelle CookBook](http://www.dcs.kcl.ac.uk/staff/urbanc/Cookbook/) handy.
 
 TODO: complete this section. :)
+
+
+## Using the Docker environment
+
+Build the IsaPlanner docker image:
+
+```
+docker build -t theorymine/isaplanner:2015.0.2 .
+```
+
+Start a new docker container from the image running a bash shell:
+
+```
+docker run -i -t theorymine/isaplanner:2015.0.2 /bin/bash
+```
+
+
+

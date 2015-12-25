@@ -70,7 +70,7 @@ fun a_rippling goals =
 -- "Things that can be automatically proved."
 
 ML {* val SOME(myrst,morersts) = a_rippling ["a + b = b + (a::N)"];
-      val final_thm = RstPP.result_thm rst g; *}
+      val final_thm = RstPP.result_thm myrst "g1"; *}
 ML {* val SOME(myrst,morersts) = a_rippling ["a + 0 = (a::N)"]; *}
 ML {* val SOME(myrst,morersts) = a_rippling ["suc (n + p) = n + suc p"]; *}
 ML {* val SOME(myrst,morersts) = a_rippling ["a ^ (b + (c :: N)) = a ^ b * a ^ c"]; *}
