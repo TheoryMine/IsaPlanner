@@ -22,7 +22,7 @@ RUN apt-get install -y \
   latex-cjk-all
 
 # Install Isabelle-2015
-RUN curl http://isabelle.in.tum.de/dist/Isabelle2015_linux.tar.gz \
+RUN curl http://isabelle.in.tum.de/website-Isabelle2015/dist/Isabelle2015_linux.tar.gz \
   -o /usr/local/Isabelle2015_linux.tar.gz
 
 RUN tar zxvf /usr/local/Isabelle2015_linux.tar.gz -C /usr/local/
