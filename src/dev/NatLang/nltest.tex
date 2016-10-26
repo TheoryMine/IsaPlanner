@@ -1,0 +1,123 @@
+\documentclass{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{color}
+\usepackage[letterpaper, margin=4cm]{geometry}
+\definecolor{gray}{gray}{0.4}
+\newtheorem*{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\title{My paper title}
+\author{My name}
+\date{The date}
+
+\begin{document}
+\maketitle
+
+Let $\mathbb{B} = \{\lozenge, \blacklozenge \}$ where $\lozenge \neq \blacklozenge$. Let $T$ be a set and $C_{a} : \mathbb{B} \times 
+                                                 \mathbb{B} \to T$ and $C_{b} : T \to T$ functions such that all of the following conditions are met: 
+\begin{itemize}
+\item $C_{a}$ and $C_{b}$ are injective, 
+\item for every $x_{\mbox{\tiny 2}}$, $x_{\mbox{\tiny 11}}$ and $x_{\mbox{\tiny 12}}$, we have $C_{a}(x_{\mbox{\tiny 11}}, x_{\mbox{\tiny 12}}) \neq C_{b}(x_{\mbox{\tiny 2}})$
+\item $T$  is \textit{covered} by $C_{a}$ and $C_{b}$ (i.e., $\mbox{\it image}(C_{a})\cup\mbox{\it image}(C_{b}) =T$).
+\item $T$  is \textit{minimal} (i.e., $C_{a}$ and $C_{b}$ generate the whole $T$).
+\end{itemize}
+
+\noindent Then we proceed to define a function over this set.
+
+\begin{definition}
+Let $f_{\alpha} : T \times  T \to T$ be the recursive function determined by the following equations (for any x, y and z): 
+\begin{align}
+f_{\alpha}(C_{a}(x, y), z) &= z \label{f_1.simps_1}\\
+f_{\alpha}(C_{b}(x), y) &= C_{b}(f_{\alpha}(x, y)) \label{f_1.simps_2}
+\end{align}
+\end{definition}
+
+\section{The Lemmas}
+We begin by proving some necessary lemmas.
+\begin{lemma}\label{lem_{n}}
+For every $n \in T$ and $p \in T$
+\[f_{\alpha}(n, C_{b}(p)) = C_{b}(f_{\alpha}(n, p))\]
+\end{lemma}
+\begin{proof}
+%[0, 1, 3, 0] 
+              % (Induction on: n ) Current goals: [o, p], top goal: lem_{n}
+              We proceed by induction on $n$. 
+              
+%[0, 1, 3, 0, 1] 
+                 % (Start base case) Current goals: [o], top goal: lem_{n}
+                 \vskip 1em
+                 \noindent For the \textbf{base of induction} we need to prove the following statement:
+                 \begin{align*}
+                 & \forall\, x_{\mbox{\tiny 1}} \in \mathbb{B}. \; \forall\, x_{\mbox{\tiny 2a}} \in \mathbb{B}. \; \forall\, q \in T. \; \notag \\
+                 & \mbox{\quad\quad\quad\quad\quad}f_{\alpha}(C_{a}(x_{\mbox{\tiny 1}}, x_{\mbox{\tiny 2a}}), C_{b}(q)) = C_{b}(f_{\alpha}(C_{a}(x_{\mbox{\tiny 1}}, x_{\mbox{\tiny 2a}}), q))
+                 \end{align*}
+%[0, 1, 3, 0, 1, 0] 
+                    % (Base case by simplification) Current goals: [], top goal: lem_{n}
+                    This follows trivially from our definitions. \\
+                    
+%[0, 1, 3, 0, 2] 
+                 \noindent For the \textbf{step of induction} we need to show that for every $o \in T$ and $q \in T$, the inductive hypothesis (\ref{q}) entails the goal (\ref{p}).
+                 \begin{align}
+                 \label{q}
+                 \forall\, r \in T. \; \; f_{\alpha}(o, C_{b}(r)) = C_{b}(f_{\alpha}(o, r))
+                 \\
+                 \label{p}
+                 f_{\alpha}(C_{b}(o), C_{b}(q)) = C_{b}(f_{\alpha}(C_{b}(o), q))
+                 \end{align}
+                 We show this with the following chain of equalities: 
+                 \begin{align*}
+                 f_{\alpha}(C_{b}(o), C_{b}(q))
+                 &= C_{b}(f_{\alpha}(o, C_{b}(q))) &\mbox{\color{gray}{by (\ref{f_1.simps_2})}}\\
+                 &= C_{b}(C_{b}(f_{\alpha}(o, q))) &\mbox{\color{gray}{by (\ref{q})}}\\
+                 &= C_{b}(f_{\alpha}(C_{b}(o), q)) &\mbox{\color{gray}{by (\ref{f_1.simps_2})}}
+                 \end{align*}
+                 
+Thus we conclude the proof of this lemma.
+\end{proof}
+\section{The Theorem}
+In this section we prove the main result of this article
+\begin{theorem}\label{g1}
+For every $a \in T$, $b \in T$ and $c \in T$
+\[f_{\alpha}(b, f_{\alpha}(a, c)) = f_{\alpha}(a, f_{\alpha}(b, c))\]
+\end{theorem}
+\begin{proof}
+%[0] 
+     % (Induction on: b ) Current goals: [i, j], top goal: g1
+     We proceed by induction on $b$. 
+     
+%[0, 0] 
+        % (Start base case) Current goals: [i], top goal: g1
+        \vskip 1em
+        \noindent For the \textbf{base of induction} we need to prove the following statement:
+        \begin{align*}
+        & \forall\, x_{\mbox{\tiny 1}} \in \mathbb{B}. \; \forall\, x_{\mbox{\tiny 2a}} \in \mathbb{B}. \; \forall\, d \in T. \; \forall\, e \in T. \; \notag \\
+        & \mbox{\quad\quad\quad\quad\quad}f_{\alpha}(C_{a}(x_{\mbox{\tiny 1}}, x_{\mbox{\tiny 2a}}), f_{\alpha}(d, e)) = f_{\alpha}(d, f_{\alpha}(C_{a}(x_{\mbox{\tiny 1}}, x_{\mbox{\tiny 2a}}), e))
+        \end{align*}
+%[0, 0, 0] 
+           % (Base case by simplification) Current goals: [], top goal: g1
+           This follows trivially from our definitions. \\
+           
+%[0, 1] 
+        \noindent For the \textbf{step of induction} we need to show that for every $d \in T$, $e \in T$ and $f \in T$, the inductive hypothesis (\ref{k}) entails the goal (\ref{j}).
+        \begin{align}
+        \label{k}
+        \forall\, g \in T. \; \forall\, h \in T. \; \; f_{\alpha}(d, f_{\alpha}(g, h)) = f_{\alpha}(g, f_{\alpha}(d, h))
+        \\
+        \label{j}
+        f_{\alpha}(C_{b}(d), f_{\alpha}(e, f)) = f_{\alpha}(e, f_{\alpha}(C_{b}(d), f))
+        \end{align}
+        We show this with the following chain of equalities: 
+        \begin{align*}
+        f_{\alpha}(C_{b}(d), f_{\alpha}(e, f))
+        &= C_{b}(f_{\alpha}(d, f_{\alpha}(e, f))) &\mbox{\color{gray}{by (\ref{f_1.simps_2})}}\\
+        &= C_{b}(f_{\alpha}(e, f_{\alpha}(d, f))) &\mbox{\color{gray}{by (\ref{k})}}\\
+        &= f_{\alpha}(e, C_{b}(f_{\alpha}(d, f))) &\mbox{\color{gray}{by Lemma \ref{lem_{n}}}}\\
+        &= f_{\alpha}(e, f_{\alpha}(C_{b}(d), f)) &\mbox{\color{gray}{by (\ref{f_1.simps_2})}}
+        \end{align*}
+        
+Thus we conclude the proof of this theorem.
+\end{proof}
+
+\end{document} 
