@@ -820,7 +820,7 @@ in
                   @ [Pretty.str (" functions such that all of the following conditions are met: ")]),
     Pretty.str "\\begin{itemize}",
     Pretty.str ("\\item " ^ commas_and constructors_str_math ^ " are injective, "), 
-    pretty_distinct_thm,
+    Pretty.block [pretty_distinct_thm, Pretty.str ","],
     Pretty.str ("\\item $"^ tname ^"$  is \\textit{covered} by " ^ commas_and constructors_str_math ^ " (i.e., $"^ (sep_with_string (map (fn x => "\\mbox{\\it image}("^x^")") constructors_str) "\\cup") ^ " =" ^ tname ^"$).")
     ]
    @ [Pretty.str "\\end{itemize}", Pretty.str "" ]
