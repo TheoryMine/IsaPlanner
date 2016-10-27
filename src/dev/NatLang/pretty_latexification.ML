@@ -1,6 +1,5 @@
 
-
-use "~/Dropbox/IsaPlanner/src/dev/NatLang/list_string_aux.ML";
+use "$ISAPLANNER_DIRECTORY/src/dev/NatLang/list_string_aux.ML";
 
 (* Prettification *)
 val pretty_breaking = (fn x => Pretty.blk (0,x)) o Pretty.breaks 
