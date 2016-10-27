@@ -122,7 +122,7 @@ structure ConjRTechn
           (* make the new conjecture *)
           val (conjname,rst2) =
             rst |> ConjStackCInfo.add_term_rst t
-                |> RstPP.new_conj_at_top ("lem_a", t)
+                |> RstPP.new_conj_at_top ("lem_{"^g^"}", t)
 
           val _ = (* for debugging print out lemmas we are thinking about *)
               if !g_conj_rtechn_debug_flag then
@@ -138,7 +138,7 @@ structure ConjRTechn
         in
           (refine
              (RstName.block
-                [RstName.str ("Proving goal " ^ g ^ " by a new lemma: "),
+                [RstName.str ("Proving goal " ^ g ^ " by a new lemma (lemma " ^ conjname ^ "): "),
                  RstName.term t])
              (RTechnEnv.allfail_critic
                 (note_failed_lemma t)
