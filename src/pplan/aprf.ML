@@ -117,6 +117,8 @@ sig
   val nd_get_avoid_of_opennd : nd -> Goaln.NSet.T option
   val nd_update_meth : (meth -> meth) -> nd -> nd
 
+  val get_ndname_meth : T -> gname -> meth
+
   val close_open_goal_with : 
      (methkind * gname list) -> gname -> T -> T
 
@@ -550,6 +552,7 @@ fun get_ndname_ncx p gid =
     in (cxn, get_cx p cxn) end;
 val get_ndname_ptabs = Cx.get_fixes oo get_ndname_cx;
 val get_ndname_ctrm = nd_get_trm oo get_nd
+val get_ndname_meth = nd_get_meth oo get_nd
 
 (* Representation note: When a node "nid" is a member of the local
 assumptions of its own context, we treat it having no further
