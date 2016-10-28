@@ -406,10 +406,6 @@ and ripple_stepcase_multfert_lemcalc g rst =
                rst
 
 and induct_ripple_multfert_lemcalc g rst = 
-  (*  (CounterExCInfo.quickcheck_concl g rst)
-      |> (if CounterExCInfo.has_counterex g rst 
-          then fail
-          else *)
     (refine (induct_ripple_lemcalcN rst g)
             (InductRTechn.induction_on_goal g
                (map_then 
@@ -455,7 +451,7 @@ fun a_rippling_rst ctx goal =
       val rsts_opt = 
         PPInterface.init_rst_of_strings ctx [goal]
          |> RState.set_rtechn (SOME (RTechnEnv.map_then MyRippleLemCalc.induct_ripple_multfert_lemcalc))
-         |> GSearch.breadth_fs (fn rst => is_none (RState.get_rtechn rst)) RState.unfold 
+         |> GSearch.depth_fs (fn rst => is_none (RState.get_rtechn rst)) RState.unfold 
          |> Seq.filter RstPP.solved_all_chk
          |> Seq.pull;
        val rst_opt =

@@ -6,17 +6,50 @@ val pretty_breaking = (fn x => Pretty.blk (0,x)) o Pretty.breaks
                 o (map Pretty.str) o (space_explode " ") o Pretty.string_of
 
 fun pretty_trm p t = Pretty.unbreakable (Trm.pretty (APrf.get_context p) t);
+ 
+fun which_is_prefix [] _ = NONE
+  | which_is_prefix (h::t) s = 
+    if String.isPrefix h s 
+    then SOME h 
+    else which_is_prefix t s
+
+fun string_from_options _ "" = (NONE,"")
+  | string_from_options subs s = 
+    case which_is_prefix subs s of 
+      NONE => string_from_options subs (String.extract(s,1,NONE)) 
+    | SOME sub => (SOME sub, String.extract(s,size sub,NONE))
+    
+fun sum _ [] = 0
+  | sum f (x::xs) = f x + sum f xs
+  
+fun estimate_display_size_of_latex_string s = 
+let 
+  val dashsep = (space_explode "\\" s) |> maps (space_explode "_")
+  val dest_latex = 
+    dashsep |> map (string_from_options ["{", " ", "}"]) 
+            |> map (fn x => if fst x = SOME "{" then snd x 
+                            else if fst x = SOME " " orelse fst x = SOME "}" then "x" ^ snd x
+                            else snd x)
+            |> maps (space_explode "}")
+            |> maps (space_explode "&")
+            |> maps (space_explode " ")
+  val dl = if String.isPrefix "\\" s then dest_latex else hd dashsep :: dest_latex
+in
+  sum size dl
+end
 
 fun pretty_cut_or_tie_latex p1 p2 = 
-  let val ss1 = Pretty.str_of p1
-      val ss2 = Pretty.str_of p2
+  let val s1 = Pretty.str_of p1
+      val s2 = Pretty.str_of p2
+      val ss1 = estimate_display_size_of_latex_string s1
+      val ss2 = estimate_display_size_of_latex_string s2
   in
-    if size ss1 + size ss2 > 250 then 
+    if ss1 + ss2 > 80 then 
       Pretty.chunks 
         [Pretty.block 
             [Pretty.str (insert_string_at_nth "& " (Pretty.string_of p1) 0), 
              Pretty.str "\\notag \\\\"],
-         Pretty.block [Pretty.str "& \\mbox{\\quad\\quad\\quad\\quad\\quad}", p2]]
+         Pretty.block [Pretty.str "& \\mbox{\\quad\\quad\\quad\\quad}", p2]]
      else Pretty.block [p1, Pretty.str "\\; ", p2]
   end
 

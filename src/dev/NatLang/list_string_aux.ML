@@ -86,7 +86,7 @@ val abc_chars =
                   "u","v","w","x","y","z"]
   
 fun expand_alphabet A 0 = A
-  | expand_alphabet A n = (expand_alphabet A (n-1)) @ (map (fn x => x^"_{"^(string_of_int n)^"}") A)
+  | expand_alphabet A n = (expand_alphabet A (n-1)) @ (map (fn x => x^"_{\\mbox{\\tiny "^(string_of_int n)^"}}") A)
   
 fun char_from_int A i = 
 let

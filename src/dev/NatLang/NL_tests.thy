@@ -38,14 +38,14 @@ val prf_is_complete = null (RState.get_goalnames rst)
     val x = Pretty.writeln ccc
 *}
  
-datatype T_14 = "C_1" "bool" | "C_2" "T_14" "bool"
+datatype T_14 = "C_27" "bool" | "C_28" "T_14" "bool"
 declare bool.simps[wrule]
 declare nat.inject[wrule]
 declare T_14.inject[wrule]
 
 fun f_2 :: "T_14 \<Rightarrow> nat \<Rightarrow> nat" where
- "f_2 (C_1 a) b = b"
-| "f_2 (C_2 a b) c = f_2 a (Suc c)"
+ "f_2 (C_27 a) b = b"
+| "f_2 (C_28 a b) c = f_2 a (Suc c)"
 
 declare f_2.simps[wrule]
 
@@ -67,6 +67,38 @@ val prf_is_complete = null (RState.get_goalnames rst)
 ML{*
  val k = NLProof.nlproof_init rst "f_2"
  val _ = NLProof.print @{context} "f_2" k
+ 
+fun which_is_prefix [] _ = NONE
+  | which_is_prefix (h::t) s = 
+    if String.isPrefix h s 
+    then SOME h 
+    else which_is_prefix t s
+
+fun string_from_options _ "" = (NONE,"")
+  | string_from_options subs s = 
+    case which_is_prefix subs s of 
+      NONE => string_from_options subs (String.extract(s,1,NONE)) 
+    | SOME sub => (SOME sub, String.extract(s,size sub,NONE))
+    
+fun sum f [] = 0
+  | sum f (x::xs) = f x + sum f xs
+  
+fun estimate_display_size_of_latex_string s = 
+let 
+  val dashsep = (space_explode "\\" s) |> maps (space_explode "_")
+  val dest_latex = 
+    dashsep |> map (string_from_options ["{", " "]) 
+            |> map (fn x => if fst x = SOME "{" then snd x 
+                            else if fst x = SOME " " then "x" ^ snd x
+                            else snd x)
+            |> maps (space_explode "}")
+            |> maps (space_explode "&")
+            |> maps (space_explode " ")
+in
+  sum size dest_latex
+end
+
+ val x = estimate_display_size_of_latex_string "\\forall \\mbox{1234}_{25} & \\mathbb{N} \\wedge 5"
  *}
 
 (*
@@ -112,7 +144,6 @@ fun f_3 :: "T_6 => nat => nat" where
 declare f_3.simps[wrule]
 
 ML{*  val rst = a_rippling_rst @{context} "f_3 a (f_3 b c) = f_3 b (f_3 a c)" *}
-  
 ML{*
  val k = NLProof.nlproof_init rst "f_3"
  val _ = NLProof.print @{context} "f_3" k

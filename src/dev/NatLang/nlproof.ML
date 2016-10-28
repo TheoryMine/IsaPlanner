@@ -35,7 +35,6 @@ sig
 end;
 
 use "$ISAPLANNER_DIRECTORY/src/dev/NatLang/pretty_latexification.ML";
-use "$ISAPLANNER_DIRECTORY/src/dev/NatLang/term_analysis.ML";
 use "$ISAPLANNER_DIRECTORY/src/dev/NatLang/rippling-interface.ML"; 
 use "$ISAPLANNER_DIRECTORY/src/dev/NatLang/rstate_names.ML"; 
 
@@ -520,11 +519,11 @@ fun pretty_tfix_nl thry (n,srt) =
 
 fun pretty_fix_nl thry (n,typ) = (* includes naturals, booleans and lists *)
   let 
-    val k = fix_typ_name (Old_Datatype_Aux.name_of_typ typ) (*TermAnalysis.Tname typ *)
+    val k = fix_typ_name (Old_Datatype_Aux.name_of_typ typ) 
     val t = if k = "" then Pretty.string_of (Trm.pretty_typ thry typ) else k
   in
      Pretty.block 
-      [Pretty.str "\\forall\\, ", 
+      [Pretty.str "\\forall \\, ", 
        Free.pretty_name (fix_vars_name n), 
        Pretty.str " ",
        if String.isPrefix "nat" t orelse String.isPrefix "Nat.nat" t then 
@@ -546,9 +545,8 @@ fun pretty_fix_nl thry (n,typ) = (* includes naturals, booleans and lists *)
 
 fun pretty_fix_nl_english thry (n,typ) = (* includes naturals, booleans and lists *)
   let 
-    val k = fix_typ_name (Old_Datatype_Aux.name_of_typ typ) (*TermAnalysis.Tname typ *)
+    val k = fix_typ_name (Old_Datatype_Aux.name_of_typ typ)
     val t = if k = "" then Pretty.string_of (Trm.pretty_typ thry typ) else k
-    val _ = writeln t
   in
      Pretty.block 
       [Pretty.str "$", 
@@ -608,10 +606,7 @@ fun prettyL_fixes_nl_english caps context ptab =
     
 fun pretty_type_nl typ = 
 let
-    val s = TermAnalysis.Tname typ
-    val t = if s = "bool" orelse s = "HOL.bool" then "\\mathbb{B}" 
-            else if s = "nat" orelse s = "Nat.nat" then "\\mathbb{N}" 
-            else s
+    val t = fix_typ_name (Old_Datatype_Aux.name_of_typ typ)
     val dotex = space_explode "." t 
 in 
   Pretty.str (if length dotex > 1 then String.concat (tl dotex) else t)
@@ -876,11 +871,11 @@ fun pretty_nlp ctxt fname L =
     val pretty_lemmas = if null t then [] 
                         else [Pretty.str "\\section{The Lemmas}", 
                               Pretty.str "We begin by proving some necessary lemmas."] 
-                           @ (map (state_and_prove "lemma") t)
+                           @ (map (state_and_prove "lemma") (rev t))
     val pretty_thm_section = [Pretty.str "\\section{The Theorem}",
                            if null t 
                              then Pretty.str "" 
-                              else Pretty.str "In this section we prove the main result of this article",
+                              else Pretty.str "In this section we prove the main result of this article.",
                            state_and_prove "theorem" h]
   in
     mk_latex_document "My paper title"
