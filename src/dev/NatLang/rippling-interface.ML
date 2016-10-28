@@ -3,7 +3,7 @@
 (*  Author: Daniel Raggi, Lucas Dixon                                  *)
 (* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *)
 
-use "~/Dropbox/IsaPlanner/src/dev/NatLang/rstate_names.ML";
+use "$ISAPLANNER_DIRECTORY/src/dev/NatLang/rstate_names.ML";
 
 signature MY_BASIC_RIPPLE (* RIPPLE_RTECHN *)=
 sig

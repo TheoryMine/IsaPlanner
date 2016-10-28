@@ -1,20 +1,12 @@
 modified src/rtechn/rippling/basic_rtechn.ML (multiple fertilisations + other suff maybe)
 
-added rippling-interface.ML (for automatic proving)
-
 modified src/cinfos/htrace/htrace_cinfo.ML (added Tree and Trace constructor to signature, and created get functions)
 
-modified src/rtechn/rippling/lemcalc.ML (RstNames are in signature now to be used from the outside)
+added rstate_names.ML (global source of names for reasoning state names)
 
-UNDONE modified src/rtechn/rippling/lemcalc.ML (added RstName ripplingN and refined rippling step) 
+added rippling-interface.ML (my versions of all the techniques I modified; refined base in induct_ripple_multfert_lemcalc so that it has children in the htrace)
 
-modified src/rtechn/rippling/basic_rtechn.ML (refined base in induct_ripple_multfert_lemcalc so that it has children in the htrace)
-
-modified src/rtechn/rippling/basic_rtechn.ML (added RstNames to signature)
-
-modified src/rtechn/conj/conj_rtechn.ML (all lemmas were called lem_a!! That's a bug, so now I call them "lem_"<g> where <g> stands for the name of the goal it is being applied to. This completely removes the problem of duplication, but maybe it is slightly weird. Also changed name from "Proving goal " ^ g ^ "from new lemma: " to simply "lem_"^g, because it makes it easier to reference)
-
-modified src/rtechn/basic/rtechn_env.ML (changed the rst name given in function rule_dthm_dtac from Pretty.block [Pretty.str "Resolution (restricted) backward using dthm ", DThm.pretty dthm] to Pretty.block [DThm.pretty dthm, Pretty.str ": Resolution backward using dthm"] to make the lemma's name more accessible)
+modified src/rtechn/conj/conj_rtechn.ML (all lemmas were called lem_a!! That's a bug, so now I call them "lem_{<g>}" where <g> stands for the name of the goal it is being applied to. This completely removes the problem of duplication.
 
 modified src/pplan/aprf.ML (added methkind, optmeth, meth, nd and T types to the signature so I can access)
 

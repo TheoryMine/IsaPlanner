@@ -216,6 +216,17 @@ end
 fun mk_ttrees fnm T =
    map hand_goals_down (flatten_lemmas fnm T)
 
+(* convert type name from T_xy to T_{xy} *) 
+fun fix_typ_name t = 
+  if t = "nat" orelse t = "Nat.nat" then "\\mathbb{N}"
+  else if  t = "bool" orelse t = "HOL.bool" then "\\mathbb{B}"
+  else if String.isPrefix "'" t then 
+    fix_typ_name (String.implode (tl (String.explode t)))
+  else if length (space_explode "_" t) > 1 then 
+    String.concat
+     ([hd (space_explode "_" t), "_{"] @ (tl (space_explode "_" t)) @ ["}"])
+  else t
+
 (* convert variables like bool1 to b_1 *) 
 fun fix_vars_name v = 
   if String.isPrefix "nat" v then 
@@ -497,7 +508,7 @@ end
 fun uncurried_string_of_named_goal prf = 
   term_to_FO_string o HOLogic.dest_Trueprop o (get_ndname_ctrm prf)
 
-fun pretty_tfix_nl thry (n,srt) =  (* needs to change *)
+fun pretty_tfix_nl thry (n,srt) =  
   let val t = Pretty.string_of (Trm.pretty_sort thry srt)
   in
     (Pretty.block 
@@ -509,7 +520,7 @@ fun pretty_tfix_nl thry (n,srt) =  (* needs to change *)
 
 fun pretty_fix_nl thry (n,typ) = (* includes naturals, booleans and lists *)
   let 
-    val k = TermAnalysis.Tname typ 
+    val k = fix_typ_name (Old_Datatype_Aux.name_of_typ typ) (*TermAnalysis.Tname typ *)
     val t = if k = "" then Pretty.string_of (Trm.pretty_typ thry typ) else k
   in
      Pretty.block 
@@ -535,17 +546,18 @@ fun pretty_fix_nl thry (n,typ) = (* includes naturals, booleans and lists *)
 
 fun pretty_fix_nl_english thry (n,typ) = (* includes naturals, booleans and lists *)
   let 
-    val k = TermAnalysis.Tname typ 
+    val k = fix_typ_name (Old_Datatype_Aux.name_of_typ typ) (*TermAnalysis.Tname typ *)
     val t = if k = "" then Pretty.string_of (Trm.pretty_typ thry typ) else k
+    val _ = writeln t
   in
      Pretty.block 
       [Pretty.str "$", 
-       Free.pretty_name (fix_vars_name n), 
+       Free.pretty_name (fix_vars_name n), (*
        if "nat" = t orelse "Nat.nat" = t then 
          Pretty.str "$ natural number"
        else if "bool" = t orelse "HOL.bool" = t then 
          Pretty.str "$ boolean"
-       else 
+       else *)
          let val spex = space_explode " " t 
              val dotex = space_explode "." t 
              val tt = if length dotex > 1 then List.last dotex else t
@@ -727,11 +739,11 @@ fun pretty_typ ctxt typ =
       val (arg_tys, concl_ty) = Term.strip_type typ
       fun is_compound_typ ty = case Term.strip_type ty of ([],_) => false | _ => true;
       val pretty_args = map (fn ty => if is_compound_typ ty
-                                      then Pretty.list "(" ")" [pretty_typ ctxt ty]
-                                      else Pretty.block [pretty_typ ctxt ty]) arg_tys
+                                      then Pretty.list "(" ")" [Pretty.str (fix_typ_name (Old_Datatype_Aux.name_of_typ ty)) (*Trm.pretty_typ ctxt ty*)]
+                                      else Pretty.block [Pretty.str (fix_typ_name (Old_Datatype_Aux.name_of_typ ty)) (*Trm.pretty_typ ctxt ty*)]) arg_tys
       val concl_pretty = (case concl_ty of Type("HOL.bool", _) => Pretty.str "\\mathbb{B}"
                                         | Type("Nat.nat", _) => Pretty.str "\\mathbb{N}"
-                                        | _ => Trm.pretty_typ ctxt concl_ty)
+                                        | _ => Pretty.str (fix_typ_name (Old_Datatype_Aux.name_of_typ concl_ty)) (*Trm.pretty_typ ctxt concl_ty*))
     in
       if is_compound_typ typ then
         Pretty.block
@@ -761,8 +773,11 @@ fun betareduce ((Abs (x,ty,t)) $ tt) = betapply (Abs (x,ty,t), betareduce tt)
   | betareduce (t1 $ t2) = (betareduce t1) $ (betareduce t2)
   | betareduce t = t
     
-fun define_set_from_type ctxt tname =
+fun define_set_from_type ctxt tn =
 let
+  val tname = (*if tn = "Nat.nat" orelse tn = "nat" then "\\mathbb{N}"
+              else if tn = "HOL.bool" orelse tn = "bool" then "\\mathbb{B}"
+              else*) tn
   val x = hd (Sledgehammer_Util.thms_of_name ctxt (tname^".induct"))
   val typ = Proof_Context.read_typ ctxt tname
   val ft = Proof_Context.read_typ ctxt (tname ^ " => bool")
@@ -815,13 +830,13 @@ let
                   :: pretty_commas_and pretty_math_terms)
     
 in 
-   [Pretty.block (extra_typ_defs @ [Pretty.str ("Let $"^ tname ^"$ be a set and " )]
+   [Pretty.block (extra_typ_defs @ [Pretty.str ("Let $"^ fix_typ_name tname ^"$ be a set and " )]
                   @ (pretty_commas_and (map pretty_const_and_type constructors))
                   @ [Pretty.str (" functions such that all of the following conditions are met: ")]),
     Pretty.str "\\begin{itemize}",
     Pretty.str ("\\item " ^ commas_and constructors_str_math ^ " are injective, "), 
     Pretty.block [pretty_distinct_thm, Pretty.str ","],
-    Pretty.str ("\\item $"^ tname ^"$  is \\textit{covered} by " ^ commas_and constructors_str_math ^ " (i.e., $"^ (sep_with_string (map (fn x => "\\mbox{\\it image}("^x^")") constructors_str) "\\cup") ^ " =" ^ tname ^"$).")
+    Pretty.str ("\\item $"^ fix_typ_name tname ^"$  is \\textit{covered} by " ^ commas_and constructors_str_math ^ " (i.e., $"^ (sep_with_string (map (fn x => "\\mbox{\\it image}("^x^")") constructors_str) "\\cup") ^ " = " ^ fix_typ_name tname ^"$).")
     ]
    @ [Pretty.str "\\end{itemize}", Pretty.str "" ]
 end
@@ -837,7 +852,11 @@ fun pretty_nlp ctxt fname L =
                      Pretty.str "\\end{proof}"]
 
     val ftyp = Term.type_of (Syntax.read_term ctxt fname)
-    val grtyps = map Old_Datatype_Aux.name_of_typ (ground_typs_of_typ ftyp)
+    val all_grtyps = map Old_Datatype_Aux.name_of_typ (ground_typs_of_typ ftyp)
+    val grtyps = 
+      filter 
+        (fn x => not (x = "nat" orelse x = "Nat.nat" orelse x = "bool" orelse x = "HOL.bool"))
+          all_grtyps
     
     val pretty_type_def = maps (define_set_from_type ctxt) grtyps
     
