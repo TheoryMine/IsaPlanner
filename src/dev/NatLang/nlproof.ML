@@ -35,13 +35,11 @@ sig
 end;
 
 use "$ISAPLANNER_DIRECTORY/src/dev/NatLang/pretty_latexification.ML";
-use "$ISAPLANNER_DIRECTORY/src/dev/NatLang/rippling-interface.ML"; 
-use "$ISAPLANNER_DIRECTORY/src/dev/NatLang/rstate_names.ML"; 
 
 structure NLProof : NL_PROOF =
 struct
 
-local open HTraceCInfo; open DB_APrf; open Prf; open RStateNames; in
+local open HTraceCInfo; open DB_APrf; open Prf; in
 
 type id_mnlp = int list (* Is this the best way to identify nodes in the proof tree? *)
 type text_mnlp = Pretty.T
@@ -135,7 +133,7 @@ fun find_induction_var_in_rstname s =
 fun find_and_kill_lemmas (TTree (D,ch)) = 
 let 
   val ch' = 
-    if String.isSubstring lemcalc_str (DescripCInfo.string_of_rst (#rstate D)) 
+    if String.isSubstring RstName.lemcalc_str (DescripCInfo.string_of_rst (#rstate D)) 
     then tl ch
     else map find_and_kill_lemmas ch
 in TTree (D,ch')
@@ -148,7 +146,7 @@ let
   val rst = #rstate D
   val xlems = List.concat (map prune_lemmas ch)
 in
-  if String.isSubstring lemcalc_str (DescripCInfo.string_of_rst rst)
+  if String.isSubstring RstName.lemcalc_str (DescripCInfo.string_of_rst rst)
   then 
     let 
       val (TTree (D',ch')) = hd ch
@@ -189,7 +187,7 @@ and restructure_tree_rec fnm tg id i (Tree ((_,rst),ch)) =
       val ngs = RState.get_goalnames rst'
       val D = {top_goal = tg, fname = fnm, node_id = id_upd, goals = ngs, rstate = rst'}
       
-      val xtg = if String.isSubstring induct_ripple_lemcalc_str (DescripCInfo.string_of_rst rst')
+      val xtg = if String.isSubstring RstName.induct_ripple_lemcalc_str (DescripCInfo.string_of_rst rst')
                 then find_lem_name_in_string (DescripCInfo.string_of_rst rst')
                 else tg
     in 
@@ -204,7 +202,7 @@ fun flatten_lemmas fnm T =
 fun hand_goals_down (TTree (D,ch)) =
 let
   val rst = #rstate D
-  val xch = if String.isSubstring induction_on_str (DescripCInfo.string_of_rst rst) then 
+  val xch = if String.isSubstring RstName.induction_on_str (DescripCInfo.string_of_rst rst) then 
                 [set_goals [(hd (#goals D))] (hd ch), 
                  set_goals [(hd (tl (#goals D)))] (hd (tl ch))]
             else ch
@@ -354,8 +352,8 @@ fun mname0 (Meth (optmeth,_)) = optmeth
   | mname0 AsmMeth = MOpen
 
 fun methkind_string MOpen = "open"
-  | methkind_string (MClosed (MKindRes g, _)) = "resolution from result: " ^ g
-  | methkind_string (MClosed (MKindSubst g, _)) = "substitution from result: " ^ g
+  | methkind_string (MClosed (MKindRes g, _)) = ("from_result: " ^ g)
+  | methkind_string (MClosed (MKindSubst g, _)) = ("from_result: " ^ g)
   | methkind_string (MClosed (MKindPrf (mname,prf), _)) = mname
   | methkind_string (MClosed (MKindThm th, _)) = "from theorem: " ^ (Thm.get_name_hint th)
   | methkind_string (MClosed (MKindTac (th,(tac,p)), _)) =
@@ -365,8 +363,8 @@ fun ref_aux_result mname =
   if String.isPrefix "subst " mname 
      orelse String.isPrefix "subst_w_thm: " mname 
      orelse String.isPrefix "rule " mname 
-  then 
-    commas (tl (space_explode " " mname))
+     orelse String.isPrefix "from_result: " mname
+  then commas (tl (space_explode " " mname))
   else ""
 
 fun ref_aux_thms mname = 
@@ -459,11 +457,11 @@ fun Uchain_from_gs_rec full_prf ((g1,m1)::(g2,m2)::t) =
   let 
     val t = (HOLogic.dest_Trueprop o (get_ndname_ctrm full_prf)) g
     val (a,b) = pair_from_eq_term t 
-  in if a = b then [] else [(b,m)]
+  in (if a = b then [] else [(b,m)])
   end
 | Uchain_from_gs_rec _ [] = []
   
-fun map_eq_align_tabs [] = []
+and map_eq_align_tabs [] = []
   | map_eq_align_tabs [(x,m)] =
     [String.concat ["&= ", ( term_to_FO_string) x, 
                     " &", reference_the_method m]]
@@ -471,21 +469,77 @@ fun map_eq_align_tabs [] = []
     String.concat ["&= ", ( term_to_FO_string) x, 
                    " &", reference_the_method m, "\\\\"]::map_eq_align_tabs t
 
-fun Uchain_from_gL _ [] = []
+and Uchain_from_gL _ [] = []
   | Uchain_from_gL full_prf ((g,m)::L) =
-let 
-  val t = (HOLogic.dest_Trueprop o (get_ndname_ctrm full_prf)) g
-  val (a,_) = pair_from_eq_term t
-  val f =  term_to_FO_string
-  val xL = Uchain_from_gs_rec full_prf ((g,m)::L)
-in 
-  f a :: map_eq_align_tabs xL
-end
+  let 
+    val t = (HOLogic.dest_Trueprop o (get_ndname_ctrm full_prf)) g
+    val (a,_) = pair_from_eq_term t
+    val f =  term_to_FO_string
+    val xL = Uchain_from_gs_rec full_prf ((g,m)::L)
+  in 
+    f a :: map_eq_align_tabs xL
+  end
 
 fun make_Uchain_align full_prf tL =
   Pretty.chunks 
     (latex_env "align*" "" (map Pretty.str (Uchain_from_gL full_prf tL)))
 
+fun make_Uchain_align_ref g full_prf tL =
+  Pretty.chunks (
+    [Pretty.str "\\begin{align*}"]
+    @ (map Pretty.str (Uchain_from_gL full_prf tL))
+    @ [Pretty.str ("\\numberthis \\label{"^g^"}")]
+    @ [Pretty.str "\\end{align*}"])
+     
+
+fun break_into_chainable_lists full_prf L =
+  let
+    fun frec ((g1,m1)::T1) [] = frec T1 [[(g1,m1)]]
+      | frec [] T = T
+      | frec _ ([]::_) = raise ERROR "impossible use of break_into_chainable_lists!"
+      | frec ((g1,m1)::T1) (((g2,m2)::T2)::T) = 
+    let 
+      val t1 = (HOLogic.dest_Trueprop o (get_ndname_ctrm full_prf)) g1
+      val t2 = (HOLogic.dest_Trueprop o (get_ndname_ctrm full_prf)) g2
+      val (a1,b1) = pair_from_eq_term t1
+      val (a2,b2) = pair_from_eq_term t2
+    in  
+      if not (a1 = a2) andalso not (b1 = b2) 
+      then frec T1 ([(g1,m1)]::((g2,Meth (MClosed (MKindSubst g1, []),Goaln.NSet.empty))::T2)::T)
+      else frec T1 (((g1,m1)::(g2,m2)::T2)::T)
+    end
+  in
+    (map rev (frec L []))
+  end
+  
+fun make_Uchains full_prf L = 
+  map (make_Uchain_align full_prf) (break_into_chainable_lists full_prf L)
+  
+fun make_and_display_Uchains full_prf L = 
+let 
+  fun frec [] = []
+    | frec [h] = 
+       [Pretty.str "Ultimately, we can conclude with the following chain of equalities:",
+       make_Uchain_align full_prf h]
+    | frec (((g,m)::L)::t) =
+       [Pretty.str "Moreover, we have the following:",
+       make_Uchain_align_ref g full_prf ((g,m)::L)] @ frec t
+in
+  case break_into_chainable_lists full_prf L of 
+    [] => [Pretty.str "This is trivial"]
+  | ([]::_) => raise ERROR "impossible output from break_into_chainable_lists in make_and_display_Uchains!"
+  | [((g,m)::L)] => 
+      [Pretty.str "We show this with the following chain of equalities: ", 
+       make_Uchain_align full_prf ((g,m)::L)]
+  | ((g,m)::L)::T => 
+      [Pretty.str "First, notice that the following statement is true: ", (*\\begin{align*}\\label{U1}", 
+       Pretty.str ((term_to_FO_string o HOLogic.dest_Trueprop o (get_ndname_ctrm full_prf)) g), 
+       Pretty.str "\\end{align*}",
+       Pretty.str "as follows: ",*)
+       make_Uchain_align_ref g full_prf ((g,m)::L)] 
+      @ frec T
+end
+    
 fun remove_schematic x = String.explode x |> filter (not o (equal "?") o str) |> String.implode
 
 fun pretty_thmL_from_fname ctxt fname =
@@ -523,7 +577,7 @@ fun pretty_fix_nl thry (n,typ) = (* includes naturals, booleans and lists *)
     val t = if k = "" then Pretty.string_of (Trm.pretty_typ thry typ) else k
   in
      Pretty.block 
-      [Pretty.str "\\forall \\, ", 
+      [Pretty.str "\\forall\\hspace{1pt} ", 
        Free.pretty_name (fix_vars_name n), 
        Pretty.str " ",
        if String.isPrefix "nat" t orelse String.isPrefix "Nat.nat" t then 
@@ -712,8 +766,9 @@ fun mk_latex_document title author date document =
   Pretty.chunks 
     ((map Pretty.str ["\\documentclass{article}",
                      "\\usepackage{amsmath,amsthm,amssymb}",
+                     "\\newcommand\\numberthis{\\addtocounter{equation}{1}\\tag{\\theequation}}",
                      "\\usepackage{color}",
-                     "\\usepackage[letterpaper, margin=4cm]{geometry}",
+                     "\\usepackage[letterpaper, margin=3.8cm]{geometry}",
                      "\\definecolor{gray}{gray}{0.4}",
                      "\\newtheorem*{theorem}{Theorem}",
                      "\\newtheorem{lemma}{Lemma}",
@@ -729,7 +784,7 @@ fun mk_latex_document title author date document =
                      ""])
     @ [document, Pretty.str "", Pretty.str "\\end{document}"])
     
-fun pretty_typ ctxt typ =
+fun pretty_typ typ =
     let
       val (arg_tys, concl_ty) = Term.strip_type typ
       fun is_compound_typ ty = case Term.strip_type ty of ([],_) => false | _ => true;
@@ -812,7 +867,7 @@ let
     Pretty.block [Pretty.str "$",
                   Pretty.str (fix_const_name c), 
                   Pretty.str " : ",
-                  pretty_typ ctxt ty,
+                  pretty_typ ty,
                   Pretty.str "$"]
     
   val distinct_thmN = tname^".distinct"
@@ -831,7 +886,10 @@ in
     Pretty.str "\\begin{itemize}",
     Pretty.str ("\\item " ^ commas_and constructors_str_math ^ " are injective, "), 
     Pretty.block [pretty_distinct_thm, Pretty.str ","],
-    Pretty.str ("\\item $"^ fix_typ_name tname ^"$  is \\textit{covered} by " ^ commas_and constructors_str_math ^ " (i.e., $"^ (sep_with_string (map (fn x => "\\mbox{\\it image}("^x^")") constructors_str) "\\cup") ^ " = " ^ fix_typ_name tname ^"$).")
+    Pretty.str ("\\item $"^ fix_typ_name tname ^"$  is \\textit{covered} by " ^ commas_and constructors_str_math 
+                ^ " (i.e., $"^ (sep_with_string (map (fn x => "\\mbox{\\it image}("^x^")") constructors_str) "\\cup") 
+                ^ " = " ^ fix_typ_name tname ^"$)\\footnote{This fact allows us to prove theorems about all the elements of " 
+                ^ fix_typ_name tname ^ " by induction over the structure given by " ^ commas_and constructors_str_math ^ ".}.")
     ]
    @ [Pretty.str "\\end{itemize}", Pretty.str "" ]
 end
@@ -861,7 +919,7 @@ fun pretty_nlp ctxt fname L =
                           Pretty.str "",
                           Pretty.str "\\begin{definition}",
                           Pretty.block [Pretty.str ("Let $" ^ fname_new ^ " : "), 
-                                       pretty_typ ctxt ftyp, 
+                                       pretty_typ ftyp, 
                                        Pretty.str "$ be the recursive function determined by the following equations (for any ",
                                        Pretty.str (commas_and (vars_from_name ctxt (fname^".simps"))),
                                        Pretty.str "): "]]
@@ -897,10 +955,10 @@ fun nlproof_tree_mk full_prf (TTree (D,ch)) =
     val top_goal = #top_goal D
     val id = #node_id D
     val goals = #goals D
-    val fname = #fname D
+   (* val fname = #fname D*)
     
     val name = DescripCInfo.string_of_rst rst
-    
+    (*
     fun pretty_step (TTree (D,ch)) =
       if String.isSubstring start_rippling_str (DescripCInfo.string_of_rst (#rstate D)) 
       then 
@@ -908,16 +966,16 @@ fun nlproof_tree_mk full_prf (TTree (D,ch)) =
             val rst' = (#rstate D')
         in ()
         end
-      else raise ERROR "Not stepcase!"
+      else raise ERROR "Not stepcase!"*)
     
     val recursed_ch = 
-      if String.isSubstring start_rippling_str name 
+      if String.isSubstring RstName.start_rippling_str name 
       then []
       else map (nlproof_tree_mk full_prf) ch
       
     (* what is shown *)
     val (text,more_deps) = 
-      if String.isSubstring basecase_str name then
+      if String.isSubstring RstName.basecase_str name then
         let 
           val qfixes_base = pretty_qfixes full_prf (hd goals)
           val pretty_base = Pretty.str (uncurried_string_of_named_goal full_prf (hd goals))
@@ -930,20 +988,20 @@ fun nlproof_tree_mk full_prf (TTree (D,ch)) =
         end
       else
       
-      if String.isSubstring basecase_simp_str name then
+      if String.isSubstring RstName.basecase_simp_str name then
         (Pretty.chunks [Pretty.str ("% (" ^ name ^ ") Current goals: [" ^ (commas goals) ^ "]" ^  ", top goal: " ^ top_goal),
                        Pretty.str ("This follows trivially from our definitions. \\\\"),
                        Pretty.str ""],[])
         
       else
-      if String.isSubstring induction_on_str name then
+      if String.isSubstring RstName.induction_on_str name then
         (Pretty.chunks [
           Pretty.str (String.concat ["% (", name, ") Current goals: [", (commas goals) ^ "]", ", top goal: ", top_goal]),
           Pretty.str ("We proceed by induction on $" ^ find_induction_var_in_rstname name ^ "$. "),
           Pretty.str ""],[])
         
       else
-      if String.isSubstring start_rippling_str name then
+      if String.isSubstring RstName.start_rippling_str name then
         let 
           val step_name = hd goals
           val step_asm_names = get_ndname_lasms full_prf step_name
@@ -965,23 +1023,23 @@ fun nlproof_tree_mk full_prf (TTree (D,ch)) =
                                       )
                           ]
            :: (latex_env "align" "" 
-                    (([Pretty.str ("\\label{"^(String.concat step_asm_names)^"}")]
+                    (([Pretty.str ("\\label{"^(String.concat step_asm_names)^"} ")]
                       @ (map_many (map pretty_cut_or_tie_latex qfixesL_stepasms)
-                                  pretty_stepasms)
+                                  pretty_stepasms) @ [Pretty.str ("\\tag{IH$_{"^"\\ref{"^step_name^"}"^"}$}")]
                      )
                      @ [Pretty.str "\\\\",
                         Pretty.str ("\\label{"^step_name^"}"), 
-                        pretty_step_goal
+                        Pretty.block [Pretty.str "&", pretty_step_goal]
                        ]
                     )
                  )
-           @           
-          [Pretty.str "We show this with the following chain of equalities: ",
-           make_Uchain_align full_prf x, Pretty.str ""]), deps_here)
+           @ make_and_display_Uchains full_prf x @
+          [(*Pretty.str "We show this with the following chain of equalities: ",
+           make_Uchain_align full_prf x,*) Pretty.str ""]), deps_here)
         end
         
       else
-      if String.isSubstring lemcalc_str name then
+      if String.isSubstring RstName.lemcalc_str name then
         (Pretty.chunks
           [Pretty.str ("% (" ^ name ^ ") Current goals: [" ^ (commas goals) ^ "]" ^  ", top goal: " ^ top_goal),
            Pretty.str (String.concat ["This can be proved using lemma ", "\\ref{", find_lem_name_in_string name ,"}"])],[])

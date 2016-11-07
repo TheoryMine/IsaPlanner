@@ -4,14 +4,6 @@ functor MyBasicRippleRTechnFUN
 (*         : BASIC_RIPPLE *)
 = struct
 
-(* prepare the skeleton, ie change object level "all's" and meta level
-all's to schematic var representation. *)
-
-(* IDEA: use records for autmatic type checking of results and for
-passing back and taking information... this can capture state
-transition requirements, such as needing explore to be true etc - this
-would provide some compile-time code checking. *)
-
 (* val prep_skeleton = Data.rulify o Drule.gen_all; *)
 structure RippleCInfo = RippleCInfo;
 local
@@ -278,16 +270,16 @@ fun my_rippling ctx goals =
     PPInterface.ipp_of_strings
       ctx (RTechnEnv.map_then MyRippling.induct_ripple_lemcalc) goals;
 
-fun a_rippling_rst ctx goal =
+fun a_rippling_rst ctx goal = 
     let
-      val rsts_opt =
+      val rsts_opt = 
         PPInterface.init_rst_of_strings ctx [goal]
-         |> RState.set_rtechn (SOME (RTechnEnv.map_then MyRippling.induct_ripple_lemcalc))
-         |> GSearch.breadth_fs (fn rst => is_none (RState.get_rtechn rst)) RState.unfold
+         |> RState.set_rtechn (SOME (RTechnEnv.map_then MyRippleLemCalc.induct_ripple_multfert_lemcalc))
+         |> GSearch.depth_fs (fn rst => is_none (RState.get_rtechn rst)) RState.unfold 
          |> Seq.filter RstPP.solved_all_chk
          |> Seq.pull;
        val rst_opt =
-          case rsts_opt of
+          case rsts_opt of 
             NONE => RState.init @{context}
           | SOME (rst,altrsts) => rst
      in rst_opt end

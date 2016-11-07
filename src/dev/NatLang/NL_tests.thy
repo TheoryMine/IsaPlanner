@@ -1,13 +1,38 @@
 theory NL_tests
 imports Main IsaP
 begin
+ML{*
+fun break_into_chainable_lists full_prf L =
+  let
+    fun frec ((a1,b1)::T1) [] = frec T1 [[(a1,b1)]]
+      | frec [] T = T
+      | frec _ ([]::_) = raise ERROR "IMPOSSIBLE!"
+      | frec ((a1,b1)::T1) (((a2,b2)::T2)::T) = 
+    let 
+    in  
+      if not (a1 = a2) andalso not (b1 = b2) 
+      then frec T1 ([(a1,b1)]::((a2,b2)::T2)::T)
+      else frec T1 (((a1,b1)::(a2,b2)::T2)::T)
+    end
+  in
+    (map rev (frec L []))
+  end
+  
+val x = break_into_chainable_lists "s" 
+[("3(x+1)^2","3(x^2 + 2x + 1)"),
+ ("(x+1)(x+1)","x^2 + 2x + 1"),
+ ("x^2 + x + x + 1","x^2 + 2x + 1"),
+ ("x^2 + x + x + 1","x^2 + x + x + 1")
+ ]
+  
+  *}
 
 ML_file "nlproof.ML"  
 ML_file "rippling-interface.ML"
 
 datatype "T" = "C_1" "HOL.bool" "HOL.bool" | "C_2" "T"
 declare bool.simps[wrule]
-
+declare T.simps[wrule]
 fun f_1 :: "T => T => T" where
   "f_1 (C_1 x y) z = z"
 | "f_1 (C_2 x) y = C_2 (f_1 x y)"
@@ -17,6 +42,8 @@ declare f_1.simps[wrule]
 ML{*  val rst = a_rippling_rst @{context} "f_1 b (f_1 a c) = f_1 a (f_1 b c) " *}
   
 ML{*
+
+ val x = estimate_display_size_of_latex_string "\\forall \\mbox{1234}_{25} & \\mathbb{N} \\wedge 5"
  val k = NLProof.nlproof_init rst "f_1"
  val _ = NLProof.print @{context} "f_1" k
  *}
@@ -41,8 +68,7 @@ val prf_is_complete = null (RState.get_goalnames rst)
 datatype T_14 = "C_27" "bool" | "C_28" "T_14" "bool"
 declare bool.simps[wrule]
 declare nat.inject[wrule]
-declare T_14.inject[wrule]
-
+thm T_14.simps
 fun f_2 :: "T_14 \<Rightarrow> nat \<Rightarrow> nat" where
  "f_2 (C_27 a) b = b"
 | "f_2 (C_28 a b) c = f_2 a (Suc c)"
@@ -67,40 +93,12 @@ val prf_is_complete = null (RState.get_goalnames rst)
 ML{*
  val k = NLProof.nlproof_init rst "f_2"
  val _ = NLProof.print @{context} "f_2" k
- 
-fun which_is_prefix [] _ = NONE
-  | which_is_prefix (h::t) s = 
-    if String.isPrefix h s 
-    then SOME h 
-    else which_is_prefix t s
-
-fun string_from_options _ "" = (NONE,"")
-  | string_from_options subs s = 
-    case which_is_prefix subs s of 
-      NONE => string_from_options subs (String.extract(s,1,NONE)) 
-    | SOME sub => (SOME sub, String.extract(s,size sub,NONE))
-    
-fun sum f [] = 0
-  | sum f (x::xs) = f x + sum f xs
-  
-fun estimate_display_size_of_latex_string s = 
-let 
-  val dashsep = (space_explode "\\" s) |> maps (space_explode "_")
-  val dest_latex = 
-    dashsep |> map (string_from_options ["{", " "]) 
-            |> map (fn x => if fst x = SOME "{" then snd x 
-                            else if fst x = SOME " " then "x" ^ snd x
-                            else snd x)
-            |> maps (space_explode "}")
-            |> maps (space_explode "&")
-            |> maps (space_explode " ")
-in
-  sum size dest_latex
-end
-
- val x = estimate_display_size_of_latex_string "\\forall \\mbox{1234}_{25} & \\mathbb{N} \\wedge 5"
- *}
-
+  *}
+ML{* val rst = a_rippling_rst @{context} "Suc(f_2 a b) = f_2 a (Suc(b))"*}
+ML{*
+ val k = NLProof.nlproof_init rst "f_2"
+ val _ = NLProof.print @{context} "f_2" k
+  *}
 (*
 f<sub>&omicron;</sub> : T<sub>14</sub> &times;  &#8469; &#8594; &#8469;
 </td></tr></table>
@@ -131,19 +129,24 @@ array_push($theorems,
                  'statement' => 'Suc(f<sub>&omicron;</sub>(a, b)) = f<sub>&omicron;</sub>(a, Suc(b))'));
 
 *)
+
+
+
 datatype "T_6" =  "C_12" "T_6" "HOL.bool"  | "C_11" "HOL.bool" "HOL.bool" 
 
 declare bool.simps[wrule]
-declare nat.inject[wrule]
-declare T_6.inject[wrule]
 
 fun f_3 :: "T_6 => nat => nat" where
   "f_3 (C_11 a b) c = Suc (Suc c)"
 | "f_3 (C_12 a b) c = Suc (f_3 a (Suc (f_3 a c)))"
 
 declare f_3.simps[wrule]
+declare nat.simps[wrule]
+declare T_6.inject[wrule]
 
-ML{*  val rst = a_rippling_rst @{context} "f_3 a (f_3 b c) = f_3 b (f_3 a c)" *}
+
+
+ML{*  val rst = a_rippling_rst @{context} "\<And>c. f_3 a (f_3 b c) = f_3 b (f_3 a c)" *}
 ML{*
  val k = NLProof.nlproof_init rst "f_3"
  val _ = NLProof.print @{context} "f_3" k

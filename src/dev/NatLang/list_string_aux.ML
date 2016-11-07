@@ -96,3 +96,21 @@ end
 
 fun int_to_greek i = char_from_int greek_chars i
 fun int_to_abc i = char_from_int abc_chars i
+
+
+ 
+fun which_is_prefix [] _ = NONE
+  | which_is_prefix (h::t) s = 
+    if String.isPrefix h s 
+    then SOME h 
+    else which_is_prefix t s
+
+fun string_from_options _ "" = (NONE,"")
+  | string_from_options subs s = 
+    case which_is_prefix subs s of 
+      NONE => string_from_options subs (String.extract(s,1,NONE)) 
+    | SOME sub => (SOME sub, String.extract(s,size sub,NONE))
+    
+fun sum _ [] = 0
+  | sum f (x::xs) = f x + sum f xs
+  

@@ -75,12 +75,12 @@ val induct_and_ripple_with_ruleN =
 val strong_fertN = RstName.str "Strong fertilisation";  
 val weak_fertN = RstName.str "Weak fertilisation"; 
 fun start_ripplingN goal = 
-    RstName.chunks [RstName.str "Start Rippling with state: ",
+    RstName.chunks [RstName.str RstName.start_rippling_str,
                     (fn rst => RippleCInfo.pretty_skels rst goal)];
 fun update_stepN dtac =
     RstName.f (fn rst => Pretty.chunks 
                            [Pretty.block 
-                              [Pretty.str "Ripple Step by ",
+                              [Pretty.str RstName.update_step_str,
                                DTac.pretty dtac (RState.get_ctxt rst)],
                             RippleCInfo.pretty_curgoals_skels rst]);
 val solved_by_ripplingN = 
@@ -94,7 +94,7 @@ val stepcase_by_ripplingN =
 (* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *)
 (* Strong Fertilisation *)
 fun strong_fert_goal goal rst =
-    givename strong_fertN 
+    givename RstName.strong_fertN 
              (orr_list (map (fn s => apply_res s goal)
                             (RippleCInfo.skeleton_names_of rst goal)))
              rst;
@@ -199,8 +199,7 @@ fun rsteps_on_goal goal rst =
     in
       if RippleCInfo.blocked_chk rst goal possiblesL
       then 
-        Seq.cons (rst |> end_rst (RstName.str ("end rippling on goal: " 
-                                               ^ goal)) 
+        Seq.cons (rst |> end_rst (RstName.str (RstName.end_rippling_str ^ "on goal: " ^ goal)) 
                       |> RState.set_goalnames [goal])
                  possibleSeq
       else possibleSeq
@@ -212,7 +211,7 @@ fun rsteps_on_goal goal rst =
 (* Simplify the base case *)
 fun simplify_basecase g = 
 (*     givename basecaseN (DTacRTechn.simp_asm_full g);  *)
-    givename basecaseN (DTacRTechn.simp_no_asm_simp_changes g);
+    givename RstName.basecase_simpN (DTacRTechn.simp_no_asm_simp_changes g);
 
 (* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *)
 (*  Induction and Rippling: no conjecturing                            *)
@@ -229,20 +228,20 @@ fun endr rst =
                             (dummy (RstName.str "Step case stuck")))))
       rst;
 fun ripple_stepcase goal rst = 
-    (refine stepcase_by_ripplingN
+    (refine RstName.stepcase_by_ripplingN
             ((startr_on_goal goal) 
                thenr (rsteps_on_goal goal) 
                thenr endr))
       rst;
 fun induct_and_ripple g rst = 
-    refine induct_and_rippleN
+    refine RstName.induct_and_rippleN
            (InductRTechn.induction_on_goal 
               g 
               (map_then simplify_basecase) 
               (map_then ripple_stepcase))
            rst; 
 fun induct_and_ripple_with_rule g rule rst = 
-    (refine induct_and_ripple_with_ruleN
+    (refine RstName.induct_and_ripple_with_ruleN
            (InductRTechn.induction_on_goal_with 
               g
               (Proof_Context.get_thm (RState.get_ctxt rst) rule)

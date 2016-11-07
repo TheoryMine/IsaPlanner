@@ -32,7 +32,50 @@ val named_term : string -> Term.term -> T
 val f : (RState.T -> Pretty.T) -> T
 val apply : T -> RState.T -> Pretty.T
 
+(* specific names *)
+  val basecase_str : string
+  val basecase_simp_str : string
+  val induct_and_ripple_str : string
+  val induction_on_str : string
+  val induct_and_ripple_with_rule_str : string
+  val strong_fert_str : string
+  val weak_fert_start_str : string
+  val weak_fert_left_str : string
+  val weak_fert_right_str : string
+  val end_fert_str : string
+  val start_rippling_str : string
+  val update_step_str : string
+  val end_rippling_str : string
+  val solved_by_rippling_str : string
+  val stepcase_by_rippling_str : string
+  val induct_ripple_lemcalc_str : string
+  val resolution_str : string
+  val lemcalc_str : string
+  val solved_str : string
+  val simp_str : string
+  val rippling_str : string  
 
+  val basecaseN : T
+  val basecase_simpN : T
+  val induct_and_rippleN : T
+  val induction_onN : T
+  val induct_and_ripple_with_ruleN : T
+  val strong_fertN : T
+  val weak_fert_startN : T
+  val weak_fert_leftN : T
+  val weak_fert_rightN : T
+  val end_fertN : T
+  val start_ripplingN : T
+  val update_stepN : T
+  val solved_by_ripplingN : T
+  val stepcase_by_ripplingN : T
+  val end_ripplingN : T
+  val induct_ripple_lemcalcN : T
+  val resolutionN : T
+  val lemcalcN : T
+  val solvedN : T
+  val simpN : T
+  val ripplingN : T
 end;
 
 structure RstName : RST_NAME =
@@ -87,5 +130,50 @@ val f = I;
 
 fun apply pf rst = pf rst;
 
+(* specific names, for universal id. Changing this may break NLProof *)
+  val basecase_str = "Start base case"
+  val basecase_simp_str = "Base case by simplification"
+  val induct_and_ripple_str = "Solve using Induction and Rippling."
+  val induction_on_str = "Induction on"
+  val induct_and_ripple_with_rule_str = "Solve using Induction (custom rule) and Rippling."
+  val strong_fert_str = "Strong fertilisation"
+  val weak_fert_start_str = "Weak fertilisation start"
+  val weak_fert_left_str = "Weak fertilisation left"
+  val weak_fert_right_str = "Weak fertilisation right"
+  val end_fert_str = "End fertilisation"
+  val start_rippling_str = "Start Rippling"
+  val update_step_str = "Ripple Step by"
+  val solved_by_rippling_str = "Rippling solves the goal directly"
+  val stepcase_by_rippling_str = "Solve the step case using rippling."
+  val end_rippling_str = "End rippling"
+  val induct_ripple_lemcalc_str = "Induct, Ripple and LemCalc"
+  val resolution_str = "Resolution"
+  val lemcalc_str = "Proving goal"
+  val solved_str = "Solved!"
+  val simp_str = "simp"
+  val rippling_str = "End rippling on goal"
 
+
+  val basecaseN = str basecase_str
+  val basecase_simpN = str basecase_simp_str
+  val induct_and_rippleN = str induct_and_ripple_str
+  val induction_onN = str induction_on_str
+  val induct_and_ripple_with_ruleN = str induct_and_ripple_with_rule_str
+  val strong_fertN = str strong_fert_str
+  val weak_fert_startN = str weak_fert_start_str
+  val weak_fert_leftN = str weak_fert_left_str
+  val weak_fert_rightN = str weak_fert_right_str
+  val end_fertN = str end_fert_str
+  val start_ripplingN = str start_rippling_str
+  val update_stepN = str update_step_str
+  val solved_by_ripplingN = str solved_by_rippling_str
+  val stepcase_by_ripplingN = str stepcase_by_rippling_str
+  val end_ripplingN = str end_rippling_str
+  val induct_ripple_lemcalcN = str induct_ripple_lemcalc_str
+  val resolutionN = str resolution_str
+  val lemcalcN = str lemcalc_str
+  val solvedN = str solved_str
+  val simpN = str simp_str
+  val ripplingN = str rippling_str
+  
 end;
