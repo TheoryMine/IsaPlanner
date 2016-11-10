@@ -64,13 +64,13 @@ val apply : T -> RState.T -> Pretty.T
   val weak_fert_startN : T
   val weak_fert_leftN : T
   val weak_fert_rightN : T
-  val end_fertN : T
+  val end_fertN : string -> T
   val start_ripplingN : T
   val update_stepN : T
   val solved_by_ripplingN : T
   val stepcase_by_ripplingN : T
   val end_ripplingN : T
-  val induct_ripple_lemcalcN : T
+  val induct_ripple_lemcalcN : string -> T
   val resolutionN : T
   val lemcalcN : T
   val solvedN : T
@@ -163,17 +163,32 @@ fun apply pf rst = pf rst;
   val weak_fert_startN = str weak_fert_start_str
   val weak_fert_leftN = str weak_fert_left_str
   val weak_fert_rightN = str weak_fert_right_str
-  val end_fertN = str end_fert_str
+  fun end_fertN goal = str (end_fert_str ^ " on goal: "  ^ goal)
   val start_ripplingN = str start_rippling_str
   val update_stepN = str update_step_str
   val solved_by_ripplingN = str solved_by_rippling_str
   val stepcase_by_ripplingN = str stepcase_by_rippling_str
   val end_ripplingN = str end_rippling_str
-  val induct_ripple_lemcalcN = str induct_ripple_lemcalc_str
+  fun induct_ripple_lemcalcN  goal = 
+    str (induct_ripple_lemcalc_str ^ " on goal: " ^ goal)
+ (* let val thry = RstPP.get_theory rst
+      val gt = Prf.get_ndname_ctrm (RState.get_pplan rst) goal
+      val (ithings, non_ithings) = InductDTac.inductable_things_in_term thry gt
+
+     (* make a list of pairs of (induction-variable, variables-to-become-sinks) *)
+      fun vars_and_sinks [] vars = vars
+        | vars_and_sinks (ithing::rest) vars = 
+                 vars_and_sinks rest ((ithing, non_ithings @ rest @ (map fst vars)) :: vars);
+
+      val vs = map ((fn s => " "^s) o fst o fst) (vars_and_sinks ithings [])
+  in
+    str (induct_ripple_lemcalc_str ^ " on goal: " ^ goal ^ " on vars:" ^ (String.concat vs))
+  end;*)
   val resolutionN = str resolution_str
   val lemcalcN = str lemcalc_str
   val solvedN = str solved_str
   val simpN = str simp_str
   val ripplingN = str rippling_str
   
+
 end;
