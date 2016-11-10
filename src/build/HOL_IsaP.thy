@@ -66,11 +66,13 @@ ML_file   "../critics/lemma_speculation.ML"
 (* rippling techniques *)
 ML_file   "../rtechn/rippling/basic_cinfo.ML"
 ML_file   "../rtechn/rippling/basic_rtechn.ML"
+ML_file   "../rtechn/rippling/multfert.ML"
 ML_file   "../rtechn/rippling/midout_cinfo.ML"
 ML_file   "../rtechn/rippling/casesplit.ML"
 ML_file   "../rtechn/rippling/casesplit_calc.ML"
 ML_file   "../rtechn/rippling/postripple_casesplit.ML"
 ML_file   "../rtechn/rippling/lemcalc.ML"
+ML_file   "../rtechn/rippling/multfert_lemcalc.ML"
 ML_file   "../rtechn/rippling/lemspec.ML"
 (*
   "../rtechn/rippling/ripple_bf_techn.ML" 
