@@ -71,6 +71,7 @@ fun pretty_block_commas_and [] = []
   | pretty_block_commas_and (h1::(h2::t)) = 
       h1 :: (pretty_block_commas_and ((Pretty.block [Pretty.str ", ", h2]) :: t))
     
+fun string_latex_mathmode s = "$" ^ s ^ "$" 
 fun pretty_latex_mathmode p = Pretty.enclose "$" "$" [p]
 
 fun pretty_latex_eqmode p = Pretty.enclose "$$" "$$" [p]

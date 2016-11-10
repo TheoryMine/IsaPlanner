@@ -519,7 +519,7 @@ fun make_and_display_Uchains full_prf L =
 let 
   fun frec [] = []
     | frec [h] = 
-       [Pretty.str "Ultimately, we can conclude with the following chain of equalities:",
+       [Pretty.str "Ultimately, we can show IG$_{\\thesection}$ as follows:",
        make_Uchain_align full_prf h]
     | frec (((g,m)::L)::t) =
        [Pretty.str "Moreover, we have the following:",
@@ -532,7 +532,7 @@ in
       [Pretty.str "We show this with the following chain of equalities: ", 
        make_Uchain_align full_prf ((g,m)::L)]
   | ((g,m)::L)::T => 
-      [Pretty.str "First, notice that the following statement is true: ", (*\\begin{align*}\\label{U1}", 
+      [Pretty.str "First, notice that the following is true: ", (*\\begin{align*}\\label{U1}", 
        Pretty.str ((term_to_FO_string o HOLogic.dest_Trueprop o (get_ndname_ctrm full_prf)) g), 
        Pretty.str "\\end{align*}",
        Pretty.str "as follows: ",*)
@@ -861,7 +861,7 @@ let
   
   val extra_typ_defs = if bool_appears then [Pretty.str "Let $\\mathbb{B} = \\{\\lozenge, \\blacklozenge \\}$ where $\\lozenge \\neq \\blacklozenge$. "] else []
   val constructors_str = map (fix_const_name o fst) constructors
-  val constructors_str_math = map ((fn x => "$"^fix_const_name x^"$") o fst) constructors
+  val constructors_str_math = map (string_latex_mathmode o fix_const_name o fst) constructors
   
   fun pretty_const_and_type (c,ty) = 
     Pretty.block [Pretty.str "$",
@@ -873,8 +873,8 @@ let
   val distinct_thmN = tname^".distinct"
   val distinct_terms = map (fix_vars_and_consts_in_term o Thm.prop_of) (Sledgehammer_Util.thms_of_name ctxt distinct_thmN)
   fun treat_vars s = "$"^ fix_vars_name s^"$"
-  val pretty_math_terms = map Pretty.str (remove_duplicates (map ((fn ss => "$" ^ ss ^ "$") o remove_schematic o term_to_FO_string) distinct_terms))
-  fun math_terms t = Pretty.str ("$"^(remove_schematic o term_to_FO_string) t ^"$")
+  val pretty_math_terms = map Pretty.str (remove_duplicates (map (string_latex_mathmode o remove_schematic o term_to_FO_string) distinct_terms))
+  fun math_terms t = Pretty.str ((string_latex_mathmode o (remove_schematic o term_to_FO_string)) t)
   val pretty_distinct_thm = 
     Pretty.block (Pretty.str ("\\item for every " ^ (commas_and (map treat_vars (vars_from_name ctxt distinct_thmN))) ^ ", we have ")
                   :: pretty_commas_and pretty_math_terms)
@@ -888,8 +888,8 @@ in
     Pretty.block [pretty_distinct_thm, Pretty.str ","],
     Pretty.str ("\\item $"^ fix_typ_name tname ^"$  is \\textit{covered} by " ^ commas_and constructors_str_math 
                 ^ " (i.e., $"^ (sep_with_string (map (fn x => "\\mbox{\\it image}("^x^")") constructors_str) "\\cup") 
-                ^ " = " ^ fix_typ_name tname ^"$)\\footnote{This fact allows us to prove theorems about all the elements of " 
-                ^ fix_typ_name tname ^ " by induction over the structure given by " ^ commas_and constructors_str_math ^ ".}.")
+                ^ " = " ^ fix_typ_name tname ^"$)\\footnote{This fact allows us to prove theorems about all the elements of $" 
+                ^ fix_typ_name tname ^ "$ by induction over the structure given by " ^ commas_and constructors_str_math ^ ".}.")
     ]
    @ [Pretty.str "\\end{itemize}", Pretty.str "" ]
 end
@@ -921,7 +921,7 @@ fun pretty_nlp ctxt fname L =
                           Pretty.block [Pretty.str ("Let $" ^ fname_new ^ " : "), 
                                        pretty_typ ftyp, 
                                        Pretty.str "$ be the recursive function determined by the following equations (for any ",
-                                       Pretty.str (commas_and (vars_from_name ctxt (fname^".simps"))),
+                                       Pretty.str (commas_and (map string_latex_mathmode (vars_from_name ctxt (fname^".simps")))),
                                        Pretty.str "): "]]
                         @ pretty_thmL_from_fname ctxt fname
                         @ [Pretty.str "\\end{definition}", Pretty.str ""]
@@ -1019,16 +1019,16 @@ fun nlproof_tree_mk full_prf (TTree (D,ch)) =
                           Pretty.str (String.concat 
                                         ([", the inductive hypothesis (\\ref{",
                                           String.concat step_asm_names,
-                                          "}) entails the goal (\\ref{",step_name,"})."])
+                                          "}) entails the inductive goal (\\ref{",step_name,"})."])
                                       )
                           ]
            :: (latex_env "align" "" 
                     (([Pretty.str ("\\label{"^(String.concat step_asm_names)^"} ")]
                       @ (map_many (map pretty_cut_or_tie_latex qfixesL_stepasms)
-                                  pretty_stepasms) @ [Pretty.str ("\\tag{IH$_{"^"\\ref{"^step_name^"}"^"}$}")]
+                                  pretty_stepasms) @ [Pretty.str ("\\tag{IH$_{"^"\\thesection"^(*^"\\ref{"step_name"}"^*)"}$}")]
                      )
                      @ [Pretty.str "\\\\",
-                        Pretty.str ("\\label{"^step_name^"}"), 
+                        Pretty.str ("\\label{"^step_name^"} \\tag{IG$_{\\thesection}$}"), 
                         Pretty.block [Pretty.str "&", pretty_step_goal]
                        ]
                     )

@@ -1,31 +1,6 @@
 theory NL_tests
 imports Main IsaP
 begin
-ML{*
-fun break_into_chainable_lists full_prf L =
-  let
-    fun frec ((a1,b1)::T1) [] = frec T1 [[(a1,b1)]]
-      | frec [] T = T
-      | frec _ ([]::_) = raise ERROR "IMPOSSIBLE!"
-      | frec ((a1,b1)::T1) (((a2,b2)::T2)::T) = 
-    let 
-    in  
-      if not (a1 = a2) andalso not (b1 = b2) 
-      then frec T1 ([(a1,b1)]::((a2,b2)::T2)::T)
-      else frec T1 (((a1,b1)::(a2,b2)::T2)::T)
-    end
-  in
-    (map rev (frec L []))
-  end
-  
-val x = break_into_chainable_lists "s" 
-[("3(x+1)^2","3(x^2 + 2x + 1)"),
- ("(x+1)(x+1)","x^2 + 2x + 1"),
- ("x^2 + x + x + 1","x^2 + 2x + 1"),
- ("x^2 + x + x + 1","x^2 + x + x + 1")
- ]
-  
-  *}
 
 ML_file "nlproof.ML"  
 ML_file "rippling-interface.ML"
@@ -42,8 +17,6 @@ declare f_1.simps[wrule]
 ML{*  val rst = a_rippling_rst @{context} "f_1 b (f_1 a c) = f_1 a (f_1 b c) " *}
   
 ML{*
-
- val x = estimate_display_size_of_latex_string "\\forall \\mbox{1234}_{25} & \\mathbb{N} \\wedge 5"
  val k = NLProof.nlproof_init rst "f_1"
  val _ = NLProof.print @{context} "f_1" k
  *}
