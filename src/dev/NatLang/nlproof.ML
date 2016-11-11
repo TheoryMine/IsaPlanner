@@ -201,20 +201,29 @@ fun flatten_lemmas fnm T =
 
   
 fun rstate_of_ttree (TTree (D,_)) = #rstate D
-fun hand_goals_down (TTree (D,ch)) =
+fun hand_goals_down full_prf (TTree (D,ch)) =
 let
   val rst = #rstate D
-  val _ = if (null ch) then () else writeln (DescripCInfo.string_of_rst (rstate_of_ttree (hd ch)))
-  val xch = if String.isSubstring RstName.induction_on_str (DescripCInfo.string_of_rst rst) then 
-              ([set_goals [(hd (#goals D))] (hd ch), 
-                 set_goals [(hd (tl (#goals D)))] (hd (tl ch))])
-            else ch
+  val xch = 
+    if String.isSubstring RstName.induction_on_str (DescripCInfo.string_of_rst rst) 
+    then 
+      let val x1 = get_ndname_lasms full_prf (hd (#goals D))
+          val x2 = get_ndname_lasms full_prf (hd (tl (#goals D)))
+          val Gs = if length x1 < length x2 
+                   (* This IF distinguishes between the step case and base case
+                      by checking which one has more assumptions. Step has IH, so 
+                      it should be larger. *)
+                   then [(hd (#goals D)),(hd (tl (#goals D)))] 
+                   else [(hd (tl (#goals D))),(hd (#goals D))]
+      in ([set_goals [hd Gs] (hd ch), set_goals [hd (tl Gs)] (hd (tl ch))])
+      end
+    else ch
 in
-  TTree (D, map hand_goals_down xch)
+  TTree (D, map (hand_goals_down full_prf) xch)
 end
 
-fun mk_ttrees fnm T =
-   map hand_goals_down (flatten_lemmas fnm T)
+fun mk_ttrees full_prf fnm T =
+   map (hand_goals_down full_prf) (flatten_lemmas fnm T)
 
 (* convert type name from T_xy to T_{xy} *) 
 fun fix_typ_name t = 
@@ -287,6 +296,14 @@ fun term_to_FO_string (t:term) =
         term_to_FO_string t1 ^ " \\neq " ^ term_to_FO_string t2
       else 
         term_to_FO_string t2 ^ " \\neq " ^ term_to_FO_string t1
+        (*
+    | (Const ("Nat.Suc",_) $ ((Const ("Nat.Suc",_) $ ((Const ("Nat.Suc",_)) $ ((Const ("Nat.Suc",_)) $ ((Const ("Nat.Suc",_)) $ ((Const ("Nat.Suc",_)) $ t))))))) => "("^term_to_FO_string t ^ " + 6)"
+    | (Const ("Nat.Suc",_) $ ((Const ("Nat.Suc",_) $ ((Const ("Nat.Suc",_)) $ ((Const ("Nat.Suc",_)) $ ((Const ("Nat.Suc",_)) $ t)))))) => "("^term_to_FO_string t ^ " + 5)"
+    | (Const ("Nat.Suc",_) $ ((Const ("Nat.Suc",_) $ ((Const ("Nat.Suc",_)) $ ((Const ("Nat.Suc",_)) $ t))))) => "("^term_to_FO_string t ^ " + 4)"
+    | (Const ("Nat.Suc",_) $ ((Const ("Nat.Suc",_) $ ((Const ("Nat.Suc",_)) $ t)))) => "("^term_to_FO_string t ^ " + 3)"
+    | (Const ("Nat.Suc",_) $ (Const ("Nat.Suc",_) $ t)) => "("^term_to_FO_string t ^ " + 2)"
+    | (Const ("Nat.Suc",_)) $ t => "("^term_to_FO_string t ^ " + 1)"
+    *)
     | _ => 
       if null args then 
         (case h of 
@@ -302,6 +319,7 @@ fun term_to_FO_string (t:term) =
            (Const ("HOL.eq",_), [s1,s2]) => s1 ^ " = " ^ s2
          | (Const ("eq",_), [s1,s2]) => s1 ^ " = " ^ s2
          | (Const ("Set.member",_), [s1,s2]) => s1 ^ " \\in " ^ s2
+         | (Const ("Nat.Suc",_), [s]) => "{\\tt{Suc}}("^s^")"
          | (Const ("HOL.Trueprop",_), [s]) => s
          | (Const ("HOL.Not",_), [s]) => "\<not>" ^ s
          | (Const (c,_), _) => (let val cc = List.last (space_explode "." c) in
@@ -860,9 +878,19 @@ let
   (* THIS IS A REALLY CONVOLUTED WAY OF GETTING THE CONSTRUCTORS, BUT IT WORKS FOR THE MOMENT *)
   val constructors = map (get_const o snd) p
   val gtyps_of_const = maps (ground_typs_of_typ o snd) constructors
-  val bool_appears = in_list @{typ HOL.bool} gtyps_of_const 
   
-  val extra_typ_defs = if bool_appears then [Pretty.str "Let $\\mathbb{B} = \\{\\lozenge, \\blacklozenge \\}$ where $\\lozenge \\neq \\blacklozenge$. "] else []
+  val bool_appears = in_list @{typ HOL.bool} gtyps_of_const 
+  val bool_def = 
+    if bool_appears 
+    then [Pretty.str "Let $\\mathbb{B} = \\{\\lozenge, \\blacklozenge \\}$ where $\\lozenge \\neq \\blacklozenge$. "] 
+    else []
+  val nat_appears = in_list @{typ Nat.nat} gtyps_of_const 
+  val nat_def = 
+    if nat_appears 
+    then [Pretty.str "Let $\\mathbb{N}$ be the set of natural numbers, with ${\\tt Suc}$ the \\textit{successor} function. "]
+    else []
+  
+  val extra_typ_defs = bool_def @ nat_def
   val constructors_str = map (fix_const_name o fst) constructors
   val constructors_str_math = map (string_latex_mathmode o fix_const_name o fst) constructors
   
@@ -918,7 +946,7 @@ fun pretty_nlp ctxt fname L =
     
     val fname_new = fix_const_name fname
     
-    val pretty_fun_def = [Pretty.str "\\noindent Then we proceed to define a function over this set.", 
+    val pretty_fun_def = [Pretty.str "\\noindent Then we can proceed to define a function over this set.", 
                           Pretty.str "",
                           Pretty.str "\\begin{definition}",
                           Pretty.block [Pretty.str ("Let $" ^ fname_new ^ " : "), 
@@ -1081,7 +1109,7 @@ fun nlproof_init rst fname =
     val htr = rst |> RState.get_cinfo 
                   |> HTraceCInfo.I.get_from_cinfo 
                   |> HTraceCInfo.get_from_trace |> fs |> hd 
-                  |> mk_ttrees fname
+                  |> mk_ttrees prf fname
   in
      map (nlproof_tree_mk prf) htr
   end

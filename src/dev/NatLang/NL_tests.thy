@@ -5,7 +5,7 @@ begin
 ML_file "nlproof.ML"  
 ML_file "rippling-interface.ML"
 
-datatype "T_2" =  "C_4" "T_2" "HOL.bool"  | "C_3" "Nat.nat" "Nat.nat" 
+datatype "T_2" =   "C_3" "Nat.nat" "Nat.nat"  | "C_4" "T_2" "HOL.bool"  
 declare nat.inject[wrule]
 
 fun f_1 :: "T_2 => nat => nat" where
@@ -18,6 +18,7 @@ ML{* val rst = a_rippling_rst @{context} "Suc (f_1 a (Suc b)) = f_1 a (Suc (Suc 
 ML{*
  val k = NLProof.nlproof_init rst "f_1"
  val _ = NLProof.print @{context} "f_1" k
+ val w = estimate_display_size_of_latex_string "{\\tt{Suc}}(1)"
  *}
 
 ML{* val prf = PPlan.get_prf (RState.get_pplan rst) *}
