@@ -1,14 +1,14 @@
 (* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *)
 (*  Top level functions for Rippling with Multiple Fert                *)
 (* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *)
-structure RippleMultfertRTechn_flow = RippleMultfertRTechnFUN(
+(*structure RippleMultfertRTechn_flow = RippleMultFertRTechnFUN(
   structure RippleCInfo = RippleCInfo_flow
   structure ConjRTechn = ConjRTechn);
 
 
-structure RippleMultfertLemCalc = RippleMultfertLemCalcFUN(
+structure RippleMultFertLemCalc = RippleMultfertLemCalcFUN(
                               structure RippleMultfert = RippleMultfertRTechn_flow);
-
+*)
 
 fun ipp_rst rst =
     Print_Mode.setmp [] (fn () => PPInterface.explore PPInterface.depth_fs_debug rst) ();
@@ -23,7 +23,7 @@ fun a_rippling_rst ctx goal =
     let
       val rsts_opt = 
         PPInterface.init_rst_of_strings ctx [goal]
-         |> RState.set_rtechn (SOME (RTechnEnv.map_then RippleMultfertLemCalc.induct_ripple_multfert_lemcalc))
+         |> RState.set_rtechn (SOME (RTechnEnv.map_then RippleMultFertLemCalc.induct_ripple_multfert_lemcalc))
          |> GSearch.breadth_fs (fn rst => is_none (RState.get_rtechn rst)) RState.unfold 
          |> Seq.filter RstPP.solved_all_chk
          |> Seq.pull;
@@ -42,7 +42,7 @@ fun a_rippling_one_goal ctx goal =
       val rst_opt = 
         PPInterface.init_rst_of_strings ctx [goal]
          |> RState.set_rtechn 
-             (SOME (RTechnEnv.map_then RippleMultfertLemCalc.induct_ripple_multfert_lemcalc))
+             (SOME (RTechnEnv.map_then RippleMultFertLemCalc.induct_ripple_multfert_lemcalc))
          |> GSearch.breadth_fs (fn rst => is_none (RState.get_rtechn rst)) RState.unfold 
          |> Seq.filter RstPP.solved_all_chk
          |> Seq.pull;

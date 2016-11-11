@@ -5,6 +5,65 @@ begin
 ML_file "nlproof.ML"  
 ML_file "rippling-interface.ML"
 
+datatype "T_2" =  "C_4" "T_2" "HOL.bool"  | "C_3" "Nat.nat" "Nat.nat" 
+declare nat.inject[wrule]
+
+fun f_1 :: "T_2 => nat => nat" where
+  "f_1 (C_3 a b) c = c"
+| "f_1 (C_4 a b) c = Suc (f_1 a (Suc (f_1 a (Suc c))))"
+
+declare f_1.simps[wrule]
+
+ML{* val rst = a_rippling_rst @{context} "Suc (f_1 a (Suc b)) = f_1 a (Suc (Suc b))"*}
+ML{*
+ val k = NLProof.nlproof_init rst "f_1"
+ val _ = NLProof.print @{context} "f_1" k
+ *}
+
+ML{* val prf = PPlan.get_prf (RState.get_pplan rst) *}
+ML{* val _ = Pretty.writeln (APrf.pretty prf) *}
+ML{* 
+val prf_is_complete = null (RState.get_goalnames rst)
+    val fs = if prf_is_complete then fst else 
+              (fn x => case (snd x) of NONE => [] 
+              | SOME t => (t |> HTraceCInfo.get_from_trace |> fst))
+    val htr = rst |> RState.get_cinfo 
+                  |> HTraceCInfo.I.get_from_cinfo 
+                  |> HTraceCInfo.get_from_trace
+                  |> fs |> hd 
+    val ccc = HTraceCInfo.pretty (HTraceCInfo.I.get_from_cinfo (RState.get_cinfo rst))
+    val x = Pretty.writeln ccc
+*}
+
+datatype "T" = "C_1" "HOL.bool" "HOL.bool" | "C_2" "T" 
+declare bool.simps[wrule]
+
+fun f_10  :: "T => T => T" where
+  "f_10  (C_1 x y) z = z"
+| "f_10  (C_2 x) y = C_2 (f_10  x y)"
+
+declare f_10.simps[wrule]
+
+ML{* val rst = a_rippling_rst @{context} "f_10 b (f_10 a c) = f_10 a (f_10 b c)" *}
+ML{*
+ val k = NLProof.nlproof_init rst "f_10"
+ val _ = NLProof.print @{context} "f_10" k
+ *}
+ML{* val prf = PPlan.get_prf (RState.get_pplan rst) *}
+ML{* val _ = Pretty.writeln (APrf.pretty prf) *}
+ML{* 
+val prf_is_complete = null (RState.get_goalnames rst)
+    val fs = if prf_is_complete then fst else 
+              (fn x => case (snd x) of NONE => [] 
+              | SOME t => (t |> HTraceCInfo.get_from_trace |> fst))
+    val htr = rst |> RState.get_cinfo 
+                  |> HTraceCInfo.I.get_from_cinfo 
+                  |> HTraceCInfo.get_from_trace
+                  |> fs |> hd 
+    val ccc = HTraceCInfo.pretty (HTraceCInfo.I.get_from_cinfo (RState.get_cinfo rst))
+    val x = Pretty.writeln ccc
+*}
+
 datatype "T" = "C_1" "HOL.bool" "HOL.bool" | "C_2" "T"
 declare bool.simps[wrule]
 declare T.simps[wrule]

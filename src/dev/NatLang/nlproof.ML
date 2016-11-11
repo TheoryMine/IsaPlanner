@@ -188,7 +188,7 @@ and restructure_tree_rec fnm tg id i (Tree ((_,rst),ch)) =
       val D = {top_goal = tg, fname = fnm, node_id = id_upd, goals = ngs, rstate = rst'}
       
       val xtg = if String.isSubstring RstName.induct_ripple_lemcalc_str (DescripCInfo.string_of_rst rst')
-                then find_lem_name_in_string (DescripCInfo.string_of_rst rst')
+                then (writeln"oi!";find_lem_name_in_string (DescripCInfo.string_of_rst rst'))
                 else tg
     in 
         TTree (D, map_numbering 0 (restructure_tree_rec fnm xtg id_upd) (tl rch))
@@ -199,12 +199,15 @@ fun flatten_lemmas fnm T =
   in (TTree (D, map find_and_kill_lemmas ch)) :: prune_lemmas (TTree (D,ch))
   end
 
+  
+fun rstate_of_ttree (TTree (D,_)) = #rstate D
 fun hand_goals_down (TTree (D,ch)) =
 let
   val rst = #rstate D
+  val _ = if (null ch) then () else writeln (DescripCInfo.string_of_rst (rstate_of_ttree (hd ch)))
   val xch = if String.isSubstring RstName.induction_on_str (DescripCInfo.string_of_rst rst) then 
-                [set_goals [(hd (#goals D))] (hd ch), 
-                 set_goals [(hd (tl (#goals D)))] (hd (tl ch))]
+              ([set_goals [(hd (#goals D))] (hd ch), 
+                 set_goals [(hd (tl (#goals D)))] (hd (tl ch))])
             else ch
 in
   TTree (D, map hand_goals_down xch)
@@ -950,14 +953,16 @@ fun print ctxt fname = Pretty.writeln o (pretty_nlp ctxt fname)
    pt is assumed to be the parent node; assumed to be initialised as NONE*)
 fun nlproof_tree_mk full_prf (TTree (D,ch)) = 
   let 
-    (* basic info *)
+     (* basic info *)
     val rst = #rstate D
     val top_goal = #top_goal D
     val id = #node_id D
-    val goals = #goals D
-   (* val fname = #fname D*)
+    val goals = #goals D   
     
     val name = DescripCInfo.string_of_rst rst
+
+   (* val fname = #fname D*)
+    
     (*
     fun pretty_step (TTree (D,ch)) =
       if String.isSubstring start_rippling_str (DescripCInfo.string_of_rst (#rstate D)) 
@@ -967,7 +972,17 @@ fun nlproof_tree_mk full_prf (TTree (D,ch)) =
         in ()
         end
       else raise ERROR "Not stepcase!"*)
-    
+      val _ = if goals = [] then () else
+        let 
+          val goal_name = hd goals 
+          val step_asm_names = get_ndname_lasms full_prf goal_name 
+          val _ = writeln goal_name
+          val _ =  map writeln step_asm_names
+          val _ =  writeln name
+          val _ = writeln "--"
+        in () 
+        end;
+            
     val recursed_ch = 
       if String.isSubstring RstName.start_rippling_str name 
       then []
@@ -1002,9 +1017,10 @@ fun nlproof_tree_mk full_prf (TTree (D,ch)) =
         
       else
       if String.isSubstring RstName.start_rippling_str name then
-        let 
-          val step_name = hd goals
+        let     
+          val step_name = hd goals 
           val step_asm_names = get_ndname_lasms full_prf step_name
+          
           val qfixes_step = pretty_qfixes_english false full_prf step_name
           val qfixesL_stepasms = map (pretty_qfixes full_prf) step_asm_names       
           val pretty_step_goal = Pretty.str (uncurried_string_of_named_goal full_prf step_name)
