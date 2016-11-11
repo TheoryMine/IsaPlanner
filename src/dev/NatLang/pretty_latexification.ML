@@ -29,7 +29,7 @@ fun pretty_cut_or_tie_latex p1 p2 =
       val ss1 = estimate_display_size_of_latex_string s1
       val ss2 = estimate_display_size_of_latex_string s2
   in
-    if ss1 + ss2 > 84 then 
+    if ss1 + ss2 > 87 then 
       Pretty.chunks 
         [Pretty.block 
             [Pretty.str (insert_string_at_nth "& " (Pretty.string_of p1) 0), 

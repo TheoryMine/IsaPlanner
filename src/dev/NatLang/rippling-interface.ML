@@ -1,14 +1,6 @@
 (* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *)
 (*  Top level functions for Rippling with Multiple Fert                *)
 (* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *)
-(*structure RippleMultfertRTechn_flow = RippleMultFertRTechnFUN(
-  structure RippleCInfo = RippleCInfo_flow
-  structure ConjRTechn = ConjRTechn);
-
-
-structure RippleMultFertLemCalc = RippleMultfertLemCalcFUN(
-                              structure RippleMultfert = RippleMultfertRTechn_flow);
-*)
 
 fun ipp_rst rst =
     Print_Mode.setmp [] (fn () => PPInterface.explore PPInterface.depth_fs_debug rst) ();
