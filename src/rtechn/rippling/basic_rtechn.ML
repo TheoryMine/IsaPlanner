@@ -59,23 +59,16 @@ would provide some compile-time code checking. *)
 (* val prep_skeleton = Data.rulify o Drule.gen_all; *)
 structure RippleCInfo = RippleCInfo;
 local 
-  open RTechnEnv;
+  open RTechnEnv; 
 in
 
 exception rippling_rtechn_exp of string;
 
 
 (* Reasoning state pretty printing functions *)
-val basecaseN = 
-    RstName.str "Solve the base case by simplification.";
-val induct_and_rippleN = 
-    RstName.str "Solve using Induction and Rippling.";
-val induct_and_ripple_with_ruleN = 
-    RstName.str "Solve using Induction (custom rule) and Rippling.";
-val strong_fertN = RstName.str "Strong fertilisation";  
 val weak_fertN = RstName.str "Weak fertilisation"; 
 fun start_ripplingN goal = 
-    RstName.chunks [RstName.str RstName.start_rippling_str,
+    RstName.chunks [RstName.start_ripplingN,
                     (fn rst => RippleCInfo.pretty_skels rst goal)];
 fun update_stepN dtac =
     RstName.f (fn rst => Pretty.chunks 
@@ -83,11 +76,6 @@ fun update_stepN dtac =
                               [Pretty.str RstName.update_step_str,
                                DTac.pretty dtac (RState.get_ctxt rst)],
                             RippleCInfo.pretty_curgoals_skels rst]);
-val solved_by_ripplingN = 
-    RstName.str "Rippling solves the goal directly";
-val stepcase_by_ripplingN = 
-    RstName.str "Solve the step case using rippling.";
-
 
 (* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *)
 (*  Fertilisation                                                      *)
@@ -218,7 +206,7 @@ fun simplify_basecase g =
 (* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *)
 fun endr rst = 
     rstif (null o RState.get_goalnames) 
-          (dummy solved_by_ripplingN)
+          (dummy RstName.solved_by_ripplingN)
           (split_then (RippleCInfo.success_chk rst) 
                       (map_then strong_fert_goal)
                       ((map_then weak_fert_goal)

@@ -19,7 +19,7 @@ sig
 end;
 
 
-functor RippleMultfertRTechnFUN
+functor RippleMultFertRTechnFUN
           (structure RippleCInfo : BASIC_RIPPLE_CINFO
            structure ConjRTechn : CONJ_RTECHN)
 = struct
