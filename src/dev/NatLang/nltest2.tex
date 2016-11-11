@@ -16,71 +16,29 @@
 \begin{document}
 \maketitle
 
-Let $\mathbb{B} = \{\lozenge, \blacklozenge \}$ where $\lozenge \neq \blacklozenge$. Let $T_{14}$ be a set and $C_{a_{\mbox{\tiny 1}}} : \mathbb{B} \to T_{14}$ and $C_{b_{\mbox{\tiny 1}}} : T_{14} \times 
-                                  \mathbb{B} \to T_{14}$ functions such that all of the following conditions are met: 
+Let $\mathbb{B} = \{\lozenge, \blacklozenge \}$ where $\lozenge \neq \blacklozenge$. Let $\mathbb{N}$ be the set of natural numbers, with ${\tt Suc}$ the \textit{successor} function. Let $T_{2}$ be a set and $C_{c} : \mathbb{N} \times 
+ \mathbb{N} \to T_{2}$ and $C_{d} : T_{2} \times  \mathbb{B} \to T_{2}$ functions such that all of the following conditions are met: 
 \begin{itemize}
-\item $C_{a_{\mbox{\tiny 1}}}$ and $C_{b_{\mbox{\tiny 1}}}$ are injective, 
-\item for every $x_{\mbox{\tiny 21}}$, $x_{\mbox{\tiny 22}}$ and $x_{\mbox{\tiny 1}}$, we have $C_{a_{\mbox{\tiny 1}}}(x_{\mbox{\tiny 1}}) \neq C_{b_{\mbox{\tiny 1}}}(x_{\mbox{\tiny 21}}, x_{\mbox{\tiny 22}})$,
-\item $T_{14}$  is \textit{covered} by $C_{a_{\mbox{\tiny 1}}}$ and $C_{b_{\mbox{\tiny 1}}}$ (i.e., $\mbox{\it image}(C_{a_{\mbox{\tiny 1}}})\cup\mbox{\it image}(C_{b_{\mbox{\tiny 1}}}) = T_{14}$)\footnote{This fact allows us to prove theorems about all the elements of $T_{14}$ by induction over the structure given by $C_{a_{\mbox{\tiny 1}}}$ and $C_{b_{\mbox{\tiny 1}}}$.}.
+\item $C_{c}$ and $C_{d}$ are injective, 
+\item for every $x_{\mbox{\tiny 21}}$, $x_{\mbox{\tiny 22}}$, $x_{\mbox{\tiny 11}}$ and $x_{\mbox{\tiny 12}}$, we have $C_{c}(x_{\mbox{\tiny 11}}, x_{\mbox{\tiny 12}}) \neq C_{d}(x_{\mbox{\tiny 21}}, x_{\mbox{\tiny 22}})$,
+\item $T_{2}$  is \textit{covered} by $C_{c}$ and $C_{d}$ (i.e., $\mbox{\it image}(C_{c})\cup\mbox{\it image}(C_{d}) = T_{2}$)\footnote{This fact allows us to prove theorems about all the elements of $T_{2}$ by induction over the structure given by $C_{c}$ and $C_{d}$.}.
 \end{itemize}
 
-\noindent Then we proceed to define a function over this set.
+\noindent Then we can proceed to define a function over this set.
 
 \begin{definition}
-Let $f_{\beta} : T_{14} \times  \mathbb{N} \to \mathbb{N}$ be the recursive function determined by the following equations (for any $a$, $b$ and $c$): 
+Let $f_{\alpha} : T_{2} \times  \mathbb{N} \to \mathbb{N}$ be the recursive function determined by the following equations (for any $a$, $b$ and $c$): 
 \begin{align}
-f_{\beta}(C_{a_{\mbox{\tiny 1}}}(a), b) &= b \label{f_2.simps_1}\\
-f_{\beta}(C_{b_{\mbox{\tiny 1}}}(a, b), c) &= f_{\beta}(a, Suc(c)) \label{f_2.simps_2}
+f_{\alpha}(C_{c}(a, b), c) &= c \label{f_1.simps_1}\\
+f_{\alpha}(C_{d}(a, b), c) &= {\tt{Suc}}(f_{\alpha}(a, {\tt{Suc}}(f_{\alpha}(a, {\tt{Suc}}(c))))) \label{f_1.simps_2}
 \end{align}
 \end{definition}
 
-\section{The Lemmas}
-We begin by proving some necessary lemmas.
-\begin{lemma}\label{lem_{n}}
-For every $n \in T_{14}$, $p \in T_{14}$ and $q \in \mathbb{N}$
-\[f_{\beta}(n, Suc(f_{\beta}(p, q))) = f_{\beta}(n, f_{\beta}(p, Suc(q)))\]
-\end{lemma}
-\begin{proof}
-%[0, 1, 3, 0] 
-              % (Induction on: p ) Current goals: [o, p], top goal: lem_{n}
-              We proceed by induction on $p$. 
-              
-%[0, 1, 3, 0, 1] 
-                 % (Start base case) Current goals: [o], top goal: lem_{n}
-                 \vskip 1em
-                 \noindent For the \textbf{base of induction} we need to prove the following statement:
-                 \begin{align*}
-                 &\forall\hspace{1pt} x \in \mathbb{B}. \; \forall\hspace{1pt} o \in T_{14}. \; \forall\hspace{1pt} r \in \mathbb{N}. \; \; f_{\beta}(o, Suc(f_{\beta}(C_{a_{\mbox{\tiny 1}}}(x), r))) = f_{\beta}(o, f_{\beta}(C_{a_{\mbox{\tiny 1}}}(x), Suc(r)))
-                 \end{align*}
-%[0, 1, 3, 0, 1, 0] 
-                    % (Base case by simplification) Current goals: [], top goal: lem_{n}
-                    This follows trivially from our definitions. \\
-                    
-%[0, 1, 3, 0, 2] 
-                 \noindent For the \textbf{step of induction} we need to show that for every $r \in T_{14}$, $x_{\mbox{\tiny 2}} \in \mathbb{B}$, $o \in T_{14}$ and $s \in \mathbb{N}$, the inductive hypothesis (\ref{q}) entails the inductive goal (\ref{p}).
-                 \begin{align}
-                 \label{q} 
-                 &\forall\hspace{1pt} t \in T_{14}. \; \forall\hspace{1pt} u \in \mathbb{N}. \; \; f_{\beta}(t, Suc(f_{\beta}(r, u))) = f_{\beta}(t, f_{\beta}(r, Suc(u)))
-                 \tag{IH$_{\thesection}$}
-                 \\
-                 \label{p} \tag{IG$_{\thesection}$}
-                 &f_{\beta}(o, Suc(f_{\beta}(C_{b_{\mbox{\tiny 1}}}(r, x_{\mbox{\tiny 2}}), s))) = f_{\beta}(o, f_{\beta}(C_{b_{\mbox{\tiny 1}}}(r, x_{\mbox{\tiny 2}}), Suc(s)))
-                 \end{align}
-                 We show this with the following chain of equalities: 
-                 \begin{align*}
-                 f_{\beta}(o, Suc(f_{\beta}(C_{b_{\mbox{\tiny 1}}}(r, x_{\mbox{\tiny 2}}), s)))
-                 &= f_{\beta}(o, Suc(f_{\beta}(r, Suc(s)))) &\mbox{\color{gray}{by (\ref{f_2.simps_2})}}\\
-                 &= f_{\beta}(o, f_{\beta}(r, Suc(Suc(s)))) &\mbox{\color{gray}{by (\ref{q})}}\\
-                 &= f_{\beta}(o, f_{\beta}(C_{b_{\mbox{\tiny 1}}}(r, x_{\mbox{\tiny 2}}), Suc(s))) &\mbox{\color{gray}{by (\ref{f_2.simps_2})}}
-                 \end{align*}
-                 
-Thus we conclude the proof of this lemma.
-\end{proof}
 \section{The Theorem}
-In this section we prove the main result of this article.
+
 \begin{theorem}\label{g1}
-For every $a \in T_{14}$, $b \in T_{14}$ and $c \in \mathbb{N}$
-\[f_{\beta}(a, f_{\beta}(b, c)) = f_{\beta}(b, f_{\beta}(a, c))\]
+For every $a \in T_{2}$ and $b \in \mathbb{N}$
+\[{\tt{Suc}}(f_{\alpha}(a, {\tt{Suc}}(b))) = f_{\alpha}(a, {\tt{Suc}}({\tt{Suc}}(b)))\]
 \end{theorem}
 \begin{proof}
 %[0] 
@@ -92,29 +50,35 @@ For every $a \in T_{14}$, $b \in T_{14}$ and $c \in \mathbb{N}$
         \vskip 1em
         \noindent For the \textbf{base of induction} we need to prove the following statement:
         \begin{align*}
-        &\forall\hspace{1pt} x \in \mathbb{B}. \; \forall\hspace{1pt} d \in T_{14}. \; \forall\hspace{1pt} e \in \mathbb{N}. \; \; f_{\beta}(C_{a_{\mbox{\tiny 1}}}(x), f_{\beta}(d, e)) = f_{\beta}(d, f_{\beta}(C_{a_{\mbox{\tiny 1}}}(x), e))
+        &\forall\hspace{1pt} x_{\mbox{\tiny 1}} \in \mathbb{N}. \; \forall\hspace{1pt} x_{\mbox{\tiny 2}} \in \mathbb{N}. \; \forall\hspace{1pt} c \in \mathbb{N}. \; \; {\tt{Suc}}(f_{\alpha}(C_{c}(x_{\mbox{\tiny 1}}, x_{\mbox{\tiny 2}}), {\tt{Suc}}(c))) = f_{\alpha}(C_{c}(x_{\mbox{\tiny 1}}, x_{\mbox{\tiny 2}}), {\tt{Suc}}({\tt{Suc}}(c)))
         \end{align*}
 %[0, 0, 0] 
            % (Base case by simplification) Current goals: [], top goal: g1
            This follows trivially from our definitions. \\
            
 %[0, 1] 
-        \noindent For the \textbf{step of induction} we need to show that for every $d \in T_{14}$, $x_{\mbox{\tiny 2}} \in \mathbb{B}$, $e \in T_{14}$ and $f \in \mathbb{N}$, the inductive hypothesis (\ref{k}) entails the inductive goal (\ref{j}).
+        \noindent For the \textbf{step of induction} we need to show that for every $c \in T_{2}$, $x_{\mbox{\tiny 2}} \in \mathbb{B}$ and $d \in \mathbb{N}$, the inductive hypothesis (\ref{k}) entails the inductive goal (\ref{j}).
         \begin{align}
         \label{k} 
-        &\forall\hspace{1pt} g \in T_{14}. \; \forall\hspace{1pt} h \in \mathbb{N}. \; \; f_{\beta}(d, f_{\beta}(g, h)) = f_{\beta}(g, f_{\beta}(d, h))
+        &\forall\hspace{1pt} e \in \mathbb{N}. \; \; {\tt{Suc}}(f_{\alpha}(c, {\tt{Suc}}(e))) = f_{\alpha}(c, {\tt{Suc}}({\tt{Suc}}(e)))
         \tag{IH$_{\thesection}$}
         \\
         \label{j} \tag{IG$_{\thesection}$}
-        &f_{\beta}(C_{b_{\mbox{\tiny 1}}}(d, x_{\mbox{\tiny 2}}), f_{\beta}(e, f)) = f_{\beta}(e, f_{\beta}(C_{b_{\mbox{\tiny 1}}}(d, x_{\mbox{\tiny 2}}), f))
+        &{\tt{Suc}}(f_{\alpha}(C_{d}(c, x_{\mbox{\tiny 2}}), {\tt{Suc}}(d))) = f_{\alpha}(C_{d}(c, x_{\mbox{\tiny 2}}), {\tt{Suc}}({\tt{Suc}}(d)))
         \end{align}
-        We show this with the following chain of equalities: 
+        First, notice that the following is true: 
         \begin{align*}
-        f_{\beta}(C_{b_{\mbox{\tiny 1}}}(d, x_{\mbox{\tiny 2}}), f_{\beta}(e, f))
-        &= f_{\beta}(d, Suc(f_{\beta}(e, f))) &\mbox{\color{gray}{by (\ref{f_2.simps_2})}}\\
-        &= f_{\beta}(d, f_{\beta}(e, Suc(f))) &\mbox{\color{gray}{by Lemma \ref{lem_{n}}}}\\
-        &= f_{\beta}(e, f_{\beta}(d, Suc(f))) &\mbox{\color{gray}{by (\ref{k})}}\\
-        &= f_{\beta}(e, f_{\beta}(C_{b_{\mbox{\tiny 1}}}(d, x_{\mbox{\tiny 2}}), f)) &\mbox{\color{gray}{by (\ref{f_2.simps_2})}}
+        {\tt{Suc}}(f_{\alpha}(c, {\tt{Suc}}(f_{\alpha}(c, {\tt{Suc}}({\tt{Suc}}(d))))))
+        &= f_{\alpha}(c, {\tt{Suc}}({\tt{Suc}}(f_{\alpha}(c, {\tt{Suc}}({\tt{Suc}}(d)))))) &\mbox{\color{gray}{by (\ref{k})}}\\
+        &= f_{\alpha}(c, {\tt{Suc}}(f_{\alpha}(c, {\tt{Suc}}({\tt{Suc}}({\tt{Suc}}(d)))))) &\mbox{\color{gray}{by (\ref{k})}}
+        \numberthis \label{n}
+        \end{align*}
+        Ultimately, we can show IG$_{\thesection}$ as follows:
+        \begin{align*}
+        {\tt{Suc}}(f_{\alpha}(C_{d}(c, x_{\mbox{\tiny 2}}), {\tt{Suc}}(d)))
+        &= {\tt{Suc}}({\tt{Suc}}(f_{\alpha}(c, {\tt{Suc}}(f_{\alpha}(c, {\tt{Suc}}({\tt{Suc}}(d))))))) &\mbox{\color{gray}{by (\ref{f_1.simps_2})}}\\
+        &= {\tt{Suc}}(f_{\alpha}(c, {\tt{Suc}}(f_{\alpha}(c, {\tt{Suc}}({\tt{Suc}}({\tt{Suc}}(d))))))) &\mbox{\color{gray}{by (\ref{n})}}\\
+        &= f_{\alpha}(C_{d}(c, x_{\mbox{\tiny 2}}), {\tt{Suc}}({\tt{Suc}}(d))) &\mbox{\color{gray}{by (\ref{f_1.simps_2})}}
         \end{align*}
         
 Thus we conclude the proof of this theorem.
