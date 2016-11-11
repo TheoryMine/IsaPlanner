@@ -170,6 +170,9 @@ structure RippleCaseSplit_flow = RippleCaseSplitRTechnFUN(
                             structure BasicRipple = RippleRTechn_flow);
 structure RippleCasePostSplit_flow = RippleCasePostSplitFUN(
                             structure BasicRipple = RippleRTechn_flow); 
+structure RippleMultFertRTechn_flow = RippleMultFertRTechnFUN(
+  structure RippleCInfo = RippleCInfo_flow
+  structure ConjRTechn = ConjRTechn);
 *} 
 
 -- "Rippling techniques with Lemma-calculationa and Case Analysis"
@@ -181,6 +184,8 @@ structure RippleLemCalc_flow2 = RippleLemCalcFUN(
 structure RippleLemSpec_flow =  RippleLemSpecFUN(
                            structure RippleLemCalc = RippleLemCalc_flow
                            structure MidOutRCInfo = MidOutCInfo_flow);
+structure RippleMultFertLemCalc_flow = RippleMultFertLemCalcFUN(
+                           structure RippleMultFert = RippleMultFertRTechn_flow);
 *} 
 
 -- "All Flow-Rippling under one structure"
@@ -194,6 +199,7 @@ structure FlowRippler = struct
     structure Basic = RippleRTechn_flow;
     structure LemCalc = RippleLemCalc_flow;
     structure LemSpec = RippleLemSpec_flow;
+    structure MultFertLemCalc = RippleMultFertLemCalc_flow;
    end;
 end;
 
@@ -227,6 +233,7 @@ structure MidOutCInfo = Rippler.MidOutCInfo;
 structure RippleRTechn = Rippler.RTechn.Basic;
 structure RippleLemCalc = Rippler.RTechn.LemCalc;
 structure RippleLemSpec = Rippler.RTechn.LemSpec;
+structure RippleMultFertLemCalc = Rippler.RTechn.MultFertLemCalc;
 *} 
 
 -- "Simplification based inductive prover (see DixonFleuriot at CADE'03)"
