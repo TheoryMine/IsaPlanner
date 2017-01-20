@@ -38,51 +38,54 @@ structure BasicRipple =
 (* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *)
 (*  Multiple Fertilisation                                             *)
 (* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *)
-
-fun subst_in_lhs_until_fail skelnm goal rst =
+fun small_seq n s = 
+  case Seq.pull s of 
+    SOME (h,t) => Seq.make (fn () => SOME (h, small_seq (n-1) t))
+  | NONE => Seq.empty
+  
+fun subst_in_lhs_until_fail skelnm sym goal rst =
     let
-      val newseq = givename RstName.weak_fert_leftN (RTechnEnv.subst_in_lhs skelnm false goal) rst
+      val newseq = givename RstName.weak_fert_leftN (RTechnEnv.subst_in_lhs skelnm sym goal) rst
       val no_more_ferts = (end_rst (RstName.end_fertN goal) rst |> RState.set_goalnames [goal] )
     in
       case Seq.pull newseq of
         NONE => Seq.single no_more_ferts
       | SOME _ => Seq.append 
+                    newseq
                     (Seq.map (RState.set_rtechn
                                 (SOME (HTraceCInfo.thenify 
-                                        (map_then (subst_in_lhs_until_fail skelnm))
-                                      )
-                                )
-                              ) newseq
-                     ) (Seq.single no_more_ferts)
+                                        (map_then (subst_in_lhs_until_fail skelnm sym)))))
+                             newseq
+                    )
     end ;
 
 
-fun subst_in_rhs_until_fail skelnm goal rst =
+fun subst_in_rhs_until_fail skelnm sym goal rst =
     let
-      val newseq = givename RstName.weak_fert_rightN (RTechnEnv.subst_in_rhs skelnm true goal) rst
+      val newseq = givename RstName.weak_fert_rightN (RTechnEnv.subst_in_rhs skelnm sym goal) rst
       val no_more_ferts = (end_rst (RstName.end_fertN goal) rst |> RState.set_goalnames [goal])
     in
       case Seq.pull newseq of
         NONE => Seq.single no_more_ferts
       | SOME _ => Seq.append 
+                    newseq
                     (Seq.map (RState.set_rtechn
                                 (SOME (HTraceCInfo.thenify 
-                                        (map_then (subst_in_rhs_until_fail skelnm)))
-                                )
-                              ) newseq
-                     ) (Seq.single no_more_ferts)
+                                        (map_then (subst_in_rhs_until_fail skelnm sym)))))
+                             newseq
+                    )
     end;
 
 
 fun subst_skel_multfert goal (skelnm,skel) rst =
-    (if BasicRipple.is_eq_term skel then
+  (if BasicRipple.is_eq_term skel then
        let
          val gt = RstPP.goal_concl rst goal
          val z = Zipper.mktop gt
        in
          if BasicRipple.is_eq_term gt then
-           orr_list [subst_in_lhs_until_fail skelnm goal,
-                     subst_in_rhs_until_fail skelnm goal]
+           (orr_list [subst_in_lhs_until_fail skelnm false goal,
+                     subst_in_rhs_until_fail skelnm true goal])
          else
            (* try the skelequation both ways around *)
            orr_list [RTechnEnv.subst_eq skelnm false goal,
@@ -103,8 +106,10 @@ fun weak_multfert_skels_goal skels goal rst =
 
 
 fun weak_multfert_goal goal rst =
-   (refine RstName.weak_fert_startN
-      (weak_multfert_skels_goal (RippleCInfo.skeleton_namedterms_of rst goal) goal)) rst;
+  rst 
+   |> (refine RstName.weak_fert_startN
+        (weak_multfert_skels_goal (RippleCInfo.skeleton_namedterms_of rst goal) goal)) 
+   |> small_seq 4;
    
 (* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- *)
 (*  Induction and Rippling: no conjecturing                            *)

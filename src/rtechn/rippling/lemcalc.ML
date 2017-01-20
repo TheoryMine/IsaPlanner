@@ -49,14 +49,14 @@ and fert_calc g =
 (* only with lemma calc *)
 and endr_lemcalc rst = 
     rstif (null o RState.get_goalnames)
-          (dummy solved_by_ripplingN)
+          (dummy RstName.solved_by_ripplingN)
           (split_then (RippleCInfo.success_chk rst) 
                       (map_then BasicRipple.strong_fert_goal)
                       (map_then fert_calc))              
       rst
 
 and ripple_stepcase_lemcalc g rst = 
-      (refine stepcase_by_ripplingN
+      (refine RstName.stepcase_by_ripplingN
               ((BasicRipple.startr_on_goal g)
                  thenr (BasicRipple.rsteps_on_goal g)
                  thenr endr_lemcalc))
@@ -67,10 +67,11 @@ and induct_ripple_lemcalc g rst =
       |> (if CounterExCInfo.has_counterex g rst 
           then fail
           else *)
-            (refine induct_and_ripple_lemcalcN
+            (refine (RstName.induct_ripple_lemcalcN g)
                     (InductRTechn.induction_on_goal g
-                       (map_then (ConjRTechn.conj_critic induct_ripple_lemcalc 
-                                              BasicRipple.simplify_basecase))
+                       (map_then (fn s => refine (RstName.basecaseN) 
+		                     (ConjRTechn.conj_critic induct_ripple_lemcalc 
+		                      BasicRipple.simplify_basecase s)))
                        (map_then ripple_stepcase_lemcalc))) rst;
 
 (* given explicit rule for first induction *)

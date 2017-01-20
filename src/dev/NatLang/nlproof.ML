@@ -495,10 +495,9 @@ and Uchain_from_gL _ [] = []
   let 
     val t = (HOLogic.dest_Trueprop o (get_ndname_ctrm full_prf)) g
     val (a,_) = pair_from_eq_term t
-    val f =  term_to_FO_string
     val xL = Uchain_from_gs_rec full_prf ((g,m)::L)
   in 
-    f a :: map_eq_align_tabs xL
+    term_to_FO_string a :: map_eq_align_tabs xL
   end
 
 fun make_Uchain_align full_prf tL =

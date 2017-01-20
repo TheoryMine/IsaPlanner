@@ -138,7 +138,7 @@ structure ConjRTechn
         in
           (refine
              (RstName.block
-                [RstName.str ("Proving goal " ^ g ^ " by a new lemma (lemma " ^ conjname ^ "): "),
+                [RstName.str ("Proving goal " ^ g ^ " by a new lemma (name: " ^ conjname ^ "): "),
                  RstName.term t])
              (RTechnEnv.allfail_critic
                 (note_failed_lemma t)

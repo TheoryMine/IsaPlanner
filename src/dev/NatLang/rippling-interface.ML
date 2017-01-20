@@ -15,7 +15,7 @@ fun a_rippling_rst ctx goal =
     let
       val rsts_opt = 
         PPInterface.init_rst_of_strings ctx [goal]
-         |> RState.set_rtechn (SOME (RTechnEnv.map_then RippleMultFertLemCalc.induct_ripple_multfert_lemcalc))
+         |> RState.set_rtechn (SOME (RTechnEnv.map_then RippleMultFertLemCalc.induct_ripple_multfert_lemcalc (*RippleLemCalc.induct_ripple_lemcalc*)))
          |> GSearch.breadth_fs (fn rst => is_none (RState.get_rtechn rst)) RState.unfold 
          |> Seq.filter RstPP.solved_all_chk
          |> Seq.pull;

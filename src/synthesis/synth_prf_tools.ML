@@ -107,7 +107,7 @@ fun just_ripple_conjecture ctxt prop_conj_term =
           if !provedref then RState.set_rtechn (SOME RTechn.fail) rst
           else rst
                             
-      val rippling = RippleLemCalc.induct_ripple_lemcalc                     
+      val rippling = RippleMultFertLemCalc.induct_ripple_multfert_lemcalc (*RippleLemCalc.induct_ripple_lemcalc *)                 
       val (init_goal,pp) =  
           PPlan.conj_term_at_top ("g", prop_conj_term) (PPlan.init ctxt)
       val provedQ = Unsynchronized.ref false
@@ -124,7 +124,7 @@ fun just_ripple_conjecture ctxt prop_conj_term =
           (RState.init_from_pp pp)
             |> RState.set_goalnames [init_goal]
             |> RState.set_rtechn (SOME rtechn)
-            |> PPInterface.depth_fs
+            |> PPInterface.breadth_fs
             |> Seq.filter RstPP.solved_all_chk
             |> Seq.list_of
       val _ = prf_time := !prf_time + (#usr (Timer.checkCPUTimer timer))
@@ -161,7 +161,7 @@ fun just_ripple_conjecture ctxt prop_conj_term =
 (* FIXME! use Isabelle's Timeout.timout command, much simpler! and avoid evil Unsynchronized.references *)
 fun ripple_timeout ctxt conj_term =
     let 
-      val timeout = Time.fromSeconds 5 (* 5 seconds per proof *)
+      val timeout = Time.fromSeconds 10 (* 5 seconds per proof *)
       val ripple_res = Unsynchronized.ref NONE 
       val timenow = Timer.startRealTimer();
       val nap = Time.fromReal 0.25;
