@@ -94,9 +94,6 @@ ML_file   "../rtechn/rippling/lemspec.ML"
   "../rtechn/rrippling/rr_techn.ML" (* Relational rippling reasoning technique implementation proper. *)
 *)
 
-ML_file "../dev/NatLang/list_string_aux.ML"
-ML_file "../dev/NatLang/pretty_latexification.ML"
-ML_file "../dev/NatLang/nlproof.ML"
 (* interface *)
 ML_file   "../interface/interface.ML"
 
