@@ -30,7 +30,8 @@ fun counter_ex_check ctxt trm =
       case (CounterExCInfo.quickcheck_term ctxt (quickcheck_params, []) trm1) of
         NONE => SOME trm | SOME cex => NONE
     end
-    handle ERROR _ => SOME trm;
+    handle ERROR _           => SOME trm
+         | TimeLimit.TimeOut => SOME trm;
 
 (* Counter-example checking with a counter that counts non-theorems *)
 fun counter_ex_check_count  counter_ex_counter_ref ctxt trm0 =
